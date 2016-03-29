@@ -6,8 +6,8 @@ namespace Kata
     {
         private static void Main(string[] args)
         {
-            var consoleWrapper = new GridDisplayer(new RandomGenerator());
-            Console.Write(consoleWrapper.DisplayBoard(9));
+            var consoleWrapper = new GridDisplayer(new RandomGenerator(), 9);
+            Console.Write(consoleWrapper.DisplayBoard());
             Console.ReadKey();
         }
     }

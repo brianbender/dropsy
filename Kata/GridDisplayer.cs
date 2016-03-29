@@ -15,18 +15,20 @@ namespace Kata
         private const string LabelFiller = "  ";
         private const string EmptySpace = " ";
         private readonly IRandomGenerator _randomGenerator;
+        private readonly int _size;
 
-        public GridDisplayer(IRandomGenerator randomGenerator)
+        public GridDisplayer(IRandomGenerator randomGenerator, int size)
         {
             _randomGenerator = randomGenerator;
+            _size = size;
         }
 
-        public string DisplayBoard(int size)
+        public string DisplayBoard()
         {
-            var horizontalEdge = RepeatString(size, HorizontalBorder);
-            var middle = RepeatString(size, DisplayMiddle(size));
-            return DisplayNextMove(size) + DisplayTop(horizontalEdge) + middle +
-                   DisplayBottom(horizontalEdge) + MakeLabel(size);
+            var horizontalEdge = RepeatString(_size, HorizontalBorder);
+            var middle = RepeatString(_size, DisplayMiddle(_size));
+            return DisplayNextMove(_size) + DisplayTop(horizontalEdge) + middle +
+                   DisplayBottom(horizontalEdge) + MakeLabel(_size);
         }
 
         private static string DisplayBottom(string horizontalEdge)

@@ -11,16 +11,15 @@ namespace Tests
         public void SetUp()
         {
             _fakeRandomGenerator = new FakeRandomGenerator(1);
-            _testObj = new GridDisplayer(_fakeRandomGenerator);
         }
 
         private FakeRandomGenerator _fakeRandomGenerator;
-        private GridDisplayer _testObj;
 
         [Test]
         public void Display1DisplaysA1X1Board()
         {
-            var output = _testObj.DisplayBoard(1);
+            var testObj = new GridDisplayer(_fakeRandomGenerator, 1);
+            var output = testObj.DisplayBoard();
             var expected = "  1  " + Environment.NewLine +
                            "┌───┐" + Environment.NewLine +
                            "│   │" + Environment.NewLine +
@@ -33,7 +32,8 @@ namespace Tests
         [Test]
         public void Display2Displaysa2X2Board()
         {
-            var output = _testObj.DisplayBoard(2);
+            var testObj = new GridDisplayer(_fakeRandomGenerator, 2);
+            var output = testObj.DisplayBoard();
             var expected = "   1    " + Environment.NewLine +
                            "┌──────┐" + Environment.NewLine +
                            "│      │" + Environment.NewLine +
@@ -47,8 +47,9 @@ namespace Tests
         [Test]
         public void Display9DisplaysA9X9Board()
         {
+            var testObj = new GridDisplayer(_fakeRandomGenerator, 9);
             _fakeRandomGenerator.NumberToReturn = 4;
-            var output = _testObj.DisplayBoard(9);
+            var output = testObj.DisplayBoard();
 
             var expected = "              4              " + Environment.NewLine +
                            "┌───────────────────────────┐" + Environment.NewLine +
