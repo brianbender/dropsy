@@ -83,5 +83,24 @@ namespace Tests
 
             Assert.That(output, Is.EqualTo(expected));
         }
+
+        [Test]
+        public void SelectColumn_PutsThePieceAtTheBottomOfTheBoard()
+        {
+            _fakeRandomGenerator.NumberToReturn = 2;
+            var testObj = new GridDisplayer(_fakeRandomGenerator, 2);
+            testObj.DisplayBoard();
+            testObj.SelectColumn("2");
+            var output = testObj.DisplayBoard();
+
+            var expected = "        " + Environment.NewLine +
+                           "┌──────┐" + Environment.NewLine +
+                           "│      │" + Environment.NewLine +
+                           "│    2 │" + Environment.NewLine +
+                           "└──────┘" + Environment.NewLine +
+                           "  1  2  " + Environment.NewLine;
+
+            Assert.That(output, Is.EqualTo(expected));
+        }
     }
 }

@@ -46,12 +46,12 @@ namespace Kata
 
 
             var middle = "";
-            for (var i1 = 0; i1 < _size; i1++)
+            for (var row = 0; row < _size; row++)
             {
                 var output2 = "";
-                for (var i = 0; i < _size; i++)
+                for (var column = 0; column < _size; column++)
                 {
-                    if (i == (_selectedColumn - 1))
+                    if (column == (_selectedColumn - 1) && (row == _size-1))
                     {
                         output2 += $" {_randomPiece} ";
                         _randomPiece = " ";
