@@ -25,6 +25,14 @@ namespace Tests
         }
 
         [Test]
+        public void AddingChipToTwoByTwoDoesNotMeanGameOver()
+        {
+            var testObj = new GridDisplayer(_fakeRandomGenerator, 2);
+            testObj.SelectColumn("1");
+            Assert.False(testObj.GameIsOver);
+        }
+
+        [Test]
         public void CallingDisplayTwiceDisplaysTheSameBoard()
         {
             _fakeRandomGenerator.NumberToReturn = 2;

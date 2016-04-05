@@ -60,16 +60,38 @@ namespace Kata
 
         public void SelectColumn(string input)
         {
+            PlaceChip(input);
+            UpdateGameState();
+        }
+
+        private void UpdateGameState()
+        {
+            if (EveryCellHasAValue())
+                GameIsOver = true;
+        }
+
+        private bool EveryCellHasAValue()
+        {
+            for (int row = 0; row < _size; row++)
+            {
+                for (int col = 0; col < _size; col++)
+                {
+                    if (CellIsEmpty(row, col))
+                        return false;
+                }
+            }
+            return true;
+        }
+
+        private void PlaceChip(string input)
+        {
             var column = GetColumnIndex(input);
             for (var row = _size - 1; row >= 0; row --)
             {
-                if (CellIsEmpty(row, column))
-                {
-                    SetCellContent(row, column, _randomPiece);
-                    _randomPiece = _randomGenerator.GetRandom(_size);
-                    GameIsOver = true;
-                    return;
-                }
+                if (!CellIsEmpty(row, column)) continue;
+                SetCellContent(row, column, _randomPiece);
+                _randomPiece = _randomGenerator.GetRandom(_size);
+                return;
             }
         }
 

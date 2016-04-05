@@ -6,14 +6,15 @@ namespace Kata
     {
         private static void Main(string[] args)
         {
-            var consoleWrapper = new GridDisplayer(new RandomGenerator(), 9);
-            while (true)
+            var game = new GridDisplayer(new RandomGenerator(), 9);
+            while (!game.GameIsOver)
             {
-                Console.Write(consoleWrapper.DisplayBoard());
+                Console.Write(game.DisplayBoard());
                 var input = Console.ReadKey().KeyChar.ToString();
-                consoleWrapper.SelectColumn(input);
+                game.SelectColumn(input);
                 Console.Clear();
             }
+            Console.Write(game.DisplayBoard());
         }
     }
 }
