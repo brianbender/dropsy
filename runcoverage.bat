@@ -1,0 +1,1 @@
+packages\OpenCover.4.6.519\tools\OpenCover.Console.exe "-target:C:\Program Files (x86)\NUnit.org\nunit-console\nunit3-console.exe" "-targetargs:Tests\bin\Debug\Tests.dll" -searchdirs:Kata\bin\Debug\ -register:user
