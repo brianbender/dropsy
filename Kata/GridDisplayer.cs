@@ -11,14 +11,13 @@ namespace Kata
         private const string LowerRight = "┘";
         private const string HorizontalBorder = "───";
         private const string VerticalBorder = "│";
-        private const string HorizontalFiller = "   ";
         private const string LabelFiller = "  ";
         private const string EmptySpace = " ";
         private readonly IRandomGenerator _randomGenerator;
         private readonly int _size;
         private string _bottomDisplay;
+        private string[,] _cellContents;
         private string _randomPiece;
-        private int _selectedColumn;
         private string _topDisplay;
 
         public GridDisplayer(IRandomGenerator randomGenerator, int size)
@@ -26,6 +25,24 @@ namespace Kata
             _randomGenerator = randomGenerator;
             _size = size;
             CreateTopAndBottom();
+            CreateCells();
+        }
+
+        private void CreateCells()
+        {
+            _cellContents = new string[_size, _size];
+            for (var col = 0; col < _size; col++)
+            {
+                for (var row = 0; row < _size; row++)
+                {
+                    SetCellContent(row, col, " ");
+                }
+            }
+        }
+
+        private void SetCellContent(int row, int col, string content)
+        {
+            _cellContents[row, col] = content;
         }
 
         private void CreateTopAndBottom()
@@ -40,13 +57,25 @@ namespace Kata
 
         public void SelectColumn(string input)
         {
-            var column = GetColumn(input);
-            _selectedColumn = column;
+            var column = GetColumnIndex(input);
+            for (var row = _size - 1; row >= 0; row --)
+            {
+                if (CellIsEmpty(row, column))
+                {
+                    SetCellContent(row, column, _randomPiece);
+                    return;
+                }
+            }
         }
 
-        private static int GetColumn(string input)
+        private bool CellIsEmpty(int row, int column)
         {
-            return int.Parse(input);
+            return GetCellContent(row, column).Equals(" ");
+        }
+
+        private static int GetColumnIndex(string input)
+        {
+            return int.Parse(input) - 1;
         }
 
         public string DisplayBoard()
@@ -73,17 +102,12 @@ namespace Kata
 
         private string DrawCell(int column, int row)
         {
-            string cellText;
-            if (column == _selectedColumn - 1 && (row == _size - 1))
-            {
-                cellText = $" {_randomPiece} ";
-                _randomPiece = " ";
-            }
-            else
-            {
-                cellText = HorizontalFiller;
-            }
-            return cellText;
+            return $" {GetCellContent(row, column)} ";
+        }
+
+        private string GetCellContent(int row, int column)
+        {
+            return _cellContents[row, column];
         }
 
         private string DisplayNextMove(int size)

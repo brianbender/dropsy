@@ -69,7 +69,7 @@ namespace Tests
         }
 
         [Test]
-        public void SelectColumn_PutsThePieceAtTheBottomOfTheBoard()
+        public void SelectColumn_PutsPiecesOnTheBoard()
         {
             _fakeRandomGenerator.NumberToReturn = 2;
             var testObj = new GridDisplayer(_fakeRandomGenerator, 2);
@@ -84,6 +84,19 @@ namespace Tests
                            "│    2 │" + Environment.NewLine +
                            "└──────┘" + Environment.NewLine +
                            "  1  2  " + Environment.NewLine;
+
+            Assert.That(output, Is.EqualTo(expected));
+
+            testObj.SelectColumn("2");
+
+            output = testObj.DisplayBoard();
+
+            expected = "   1    " + Environment.NewLine +
+                       "┌──────┐" + Environment.NewLine +
+                       "│    1 │" + Environment.NewLine +
+                       "│    2 │" + Environment.NewLine +
+                       "└──────┘" + Environment.NewLine +
+                       "  1  2  " + Environment.NewLine;
 
             Assert.That(output, Is.EqualTo(expected));
         }
