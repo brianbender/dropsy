@@ -16,14 +16,27 @@ namespace Kata
         private const string EmptySpace = " ";
         private readonly IRandomGenerator _randomGenerator;
         private readonly int _size;
-        private int _selectedColumn;
+        private string _bottomDisplay;
         private string _randomPiece;
+        private int _selectedColumn;
+        private string _topDisplay;
 
         public GridDisplayer(IRandomGenerator randomGenerator, int size)
         {
             _randomGenerator = randomGenerator;
             _size = size;
             _randomPiece = _randomGenerator.GetRandom(size);
+            CreateTopAndBottom();
+        }
+
+        private void CreateTopAndBottom()
+        {
+            var output = "";
+            for (var i = 0; i < _size; i++)
+                output += HorizontalBorder;
+            var horizontalEdge = output;
+            _bottomDisplay = LowerLeft + horizontalEdge + LowerRight + Environment.NewLine + MakeLabel();
+            _topDisplay = UpperLeft + horizontalEdge + UpperRight + Environment.NewLine;
         }
 
         public void SelectColumn(string input)
@@ -39,43 +52,39 @@ namespace Kata
 
         public string DisplayBoard()
         {
-            var output = "";
-            for (var i = 0; i < _size; i++)
-                output += HorizontalBorder;
-            var horizontalEdge = output;
+            var middle = DrawInside();
+            return DisplayNextMove(_size) + _topDisplay + middle +
+                   _bottomDisplay;
+        }
 
-
+        private string DrawInside()
+        {
             var middle = "";
             for (var row = 0; row < _size; row++)
             {
-                var output2 = "";
+                var rowText = "";
                 for (var column = 0; column < _size; column++)
                 {
-                    if (column == (_selectedColumn - 1) && (row == _size-1))
-                    {
-                        output2 += $" {_randomPiece} ";
-                        _randomPiece = " ";
-                    }
-                    else
-                    {
-                        output2 += HorizontalFiller;
-                    }
+                    rowText += DrawCell(column, row);
                 }
-                middle += VerticalBorder + output2 + VerticalBorder + Environment.NewLine;
+                middle += string.Format("{0}{1}{0}{2}", VerticalBorder, rowText, Environment.NewLine);
             }
-
-            return DisplayNextMove(_size) + DisplayTop(horizontalEdge) + middle +
-                   DisplayBottom(horizontalEdge) + MakeLabel(_size);
+            return middle;
         }
 
-        private static string DisplayBottom(string horizontalEdge)
+        private string DrawCell(int column, int row)
         {
-            return LowerLeft + horizontalEdge + LowerRight + Environment.NewLine;
-        }
-
-        private static string DisplayTop(string horizontalEdge)
-        {
-            return UpperLeft + horizontalEdge + UpperRight + Environment.NewLine;
+            string cellText;
+            if (column == _selectedColumn - 1 && (row == _size - 1))
+            {
+                cellText = $" {_randomPiece} ";
+                _randomPiece = " ";
+            }
+            else
+            {
+                cellText = HorizontalFiller;
+            }
+            return cellText;
         }
 
         private string DisplayNextMove(int size)
@@ -86,10 +95,10 @@ namespace Kata
             return string.Join("", top) + Environment.NewLine;
         }
 
-        private static string MakeLabel(int size)
+        private string MakeLabel()
         {
             var output = LabelFiller;
-            for (var i = 0; i < size; i++)
+            for (var i = 0; i < _size; i++)
                 output += i + 1 + LabelFiller;
             return output + Environment.NewLine;
         }
