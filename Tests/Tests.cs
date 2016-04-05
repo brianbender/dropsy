@@ -16,6 +16,22 @@ namespace Tests
         private FakeRandomGenerator _fakeRandomGenerator;
 
         [Test]
+        public void AddingChipToOneByOneMeansGameOver()
+        {
+        }
+
+        [Test]
+        public void CallingDisplayTwiceDisplaysTheSameBoard()
+        {
+            _fakeRandomGenerator.NumberToReturn = 2;
+            var testObj = new GridDisplayer(_fakeRandomGenerator, 2);
+            var firstBoard = testObj.DisplayBoard();
+            _fakeRandomGenerator.NumberToReturn = 1;
+            var secondBoard = testObj.DisplayBoard();
+            Assert.That(firstBoard, Is.EqualTo(secondBoard));
+        }
+
+        [Test]
         public void Display1DisplaysA1X1Board()
         {
             var testObj = new GridDisplayer(_fakeRandomGenerator, 1);
@@ -77,7 +93,6 @@ namespace Tests
             _fakeRandomGenerator.NumberToReturn = 1;
             testObj.SelectColumn("2");
             var output = testObj.DisplayBoard();
-
             var expected = "   1    " + Environment.NewLine +
                            "┌──────┐" + Environment.NewLine +
                            "│      │" + Environment.NewLine +
@@ -86,9 +101,7 @@ namespace Tests
                            "  1  2  " + Environment.NewLine;
 
             Assert.That(output, Is.EqualTo(expected));
-
             testObj.SelectColumn("2");
-
             output = testObj.DisplayBoard();
 
             expected = "   1    " + Environment.NewLine +

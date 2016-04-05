@@ -26,6 +26,7 @@ namespace Kata
             _size = size;
             CreateTopAndBottom();
             CreateCells();
+            _randomPiece = _randomGenerator.GetRandom(_size);
         }
 
         private void CreateCells()
@@ -63,9 +64,10 @@ namespace Kata
                 if (CellIsEmpty(row, column))
                 {
                     SetCellContent(row, column, _randomPiece);
-                    return;
+                    break;
                 }
             }
+            _randomPiece = _randomGenerator.GetRandom(_size);
         }
 
         private bool CellIsEmpty(int row, int column)
@@ -112,7 +114,6 @@ namespace Kata
 
         private string DisplayNextMove(int size)
         {
-            _randomPiece = _randomGenerator.GetRandom(size);
             var chars = size*3 + 2;
             var top = Enumerable.Repeat(EmptySpace, chars).ToArray();
             top[(chars - 1)/2] = _randomPiece;
