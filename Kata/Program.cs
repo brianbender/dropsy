@@ -7,11 +7,13 @@ namespace Kata
         private static void Main(string[] args)
         {
             var consoleWrapper = new GridDisplayer(new RandomGenerator(), 9);
-            Console.Write(consoleWrapper.DisplayBoard());
-            var input = Console.ReadKey().KeyChar.ToString();
-            consoleWrapper.SelectColumn(input);
-            Console.Clear();
-            Console.Write(consoleWrapper.DisplayBoard());
+            while (true)
+            {
+                Console.Write(consoleWrapper.DisplayBoard());
+                var input = Console.ReadKey().KeyChar.ToString();
+                consoleWrapper.SelectColumn(input);
+                Console.Clear();
+            }
         }
     }
 }
