@@ -18,6 +18,10 @@ namespace Tests
         [Test]
         public void AddingChipToOneByOneMeansGameOver()
         {
+            var testObj = new GridDisplayer(_fakeRandomGenerator, 1);
+            Assert.False(testObj.GameIsOver);
+            testObj.SelectColumn("1");
+            Assert.True(testObj.GameIsOver);
         }
 
         [Test]

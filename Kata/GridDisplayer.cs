@@ -29,6 +29,8 @@ namespace Kata
             _randomPiece = _randomGenerator.GetRandom(_size);
         }
 
+        public bool GameIsOver { get; set; } = false;
+
         private void CreateCells()
         {
             _cellContents = new string[_size, _size];
@@ -65,6 +67,7 @@ namespace Kata
                 {
                     SetCellContent(row, column, _randomPiece);
                     _randomPiece = _randomGenerator.GetRandom(_size);
+                    GameIsOver = true;
                     return;
                 }
             }
