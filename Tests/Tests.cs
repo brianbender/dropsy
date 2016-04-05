@@ -69,31 +69,16 @@ namespace Tests
         }
 
         [Test]
-        public void SelectColumn_DropsNumberOntoBoard()
-        {
-            var testObj = new GridDisplayer(_fakeRandomGenerator, 1);
-            testObj.DisplayBoard();
-            testObj.SelectColumn("1");
-            var output = testObj.DisplayBoard();
-            var expected = "     " + Environment.NewLine +
-                           "┌───┐" + Environment.NewLine +
-                           "│ 1 │" + Environment.NewLine +
-                           "└───┘" + Environment.NewLine +
-                           "  1  " + Environment.NewLine;
-
-            Assert.That(output, Is.EqualTo(expected));
-        }
-
-        [Test]
         public void SelectColumn_PutsThePieceAtTheBottomOfTheBoard()
         {
             _fakeRandomGenerator.NumberToReturn = 2;
             var testObj = new GridDisplayer(_fakeRandomGenerator, 2);
             testObj.DisplayBoard();
+            _fakeRandomGenerator.NumberToReturn = 1;
             testObj.SelectColumn("2");
             var output = testObj.DisplayBoard();
 
-            var expected = "        " + Environment.NewLine +
+            var expected = "   1    " + Environment.NewLine +
                            "┌──────┐" + Environment.NewLine +
                            "│      │" + Environment.NewLine +
                            "│    2 │" + Environment.NewLine +

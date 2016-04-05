@@ -25,7 +25,6 @@ namespace Kata
         {
             _randomGenerator = randomGenerator;
             _size = size;
-            _randomPiece = _randomGenerator.GetRandom(size);
             CreateTopAndBottom();
         }
 
@@ -89,6 +88,7 @@ namespace Kata
 
         private string DisplayNextMove(int size)
         {
+            _randomPiece = _randomGenerator.GetRandom(size);
             var chars = size*3 + 2;
             var top = Enumerable.Repeat(EmptySpace, chars).ToArray();
             top[(chars - 1)/2] = _randomPiece;
