@@ -113,5 +113,20 @@ namespace Tests
 
             Assert.That(output, Is.EqualTo(expected));
         }
+
+        [Test]
+        public void SelectColumn_DoesNotChangeBoardIfSelectedColumnFull()
+        {
+            _fakeRandomGenerator.NumberToReturn = 1;
+            var testObj = new GridDisplayer(_fakeRandomGenerator, 2);
+            testObj.SelectColumn("2");
+            _fakeRandomGenerator.NumberToReturn = 2;
+            testObj.SelectColumn("2");
+            var first = testObj.DisplayBoard();
+            _fakeRandomGenerator.NumberToReturn = 1;
+            testObj.SelectColumn("2");
+            var second = testObj.DisplayBoard();
+            Assert.That(first, Is.EqualTo(second));
+        }
     }
 }

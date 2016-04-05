@@ -64,10 +64,10 @@ namespace Kata
                 if (CellIsEmpty(row, column))
                 {
                     SetCellContent(row, column, _randomPiece);
-                    break;
+                    _randomPiece = _randomGenerator.GetRandom(_size);
+                    return;
                 }
             }
-            _randomPiece = _randomGenerator.GetRandom(_size);
         }
 
         private bool CellIsEmpty(int row, int column)
