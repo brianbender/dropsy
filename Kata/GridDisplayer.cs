@@ -16,17 +16,54 @@ namespace Kata
         private const string EmptySpace = " ";
         private readonly IRandomGenerator _randomGenerator;
         private readonly int _size;
+        private int _selectedColumn;
+        private string _randomPiece;
 
         public GridDisplayer(IRandomGenerator randomGenerator, int size)
         {
             _randomGenerator = randomGenerator;
             _size = size;
+            _randomPiece = _randomGenerator.GetRandom(size);
+        }
+
+        public void SelectColumn(string input)
+        {
+            var column = GetColumn(input);
+            _selectedColumn = column;
+        }
+
+        private static int GetColumn(string input)
+        {
+            return int.Parse(input);
         }
 
         public string DisplayBoard()
         {
-            var horizontalEdge = RepeatString(_size, HorizontalBorder);
-            var middle = RepeatString(_size, DisplayMiddle(_size));
+            var output = "";
+            for (var i = 0; i < _size; i++)
+                output += HorizontalBorder;
+            var horizontalEdge = output;
+
+
+            var middle = "";
+            for (var i1 = 0; i1 < _size; i1++)
+            {
+                var output2 = "";
+                for (var i = 0; i < _size; i++)
+                {
+                    if (i == (_selectedColumn - 1))
+                    {
+                        output2 += $" {_randomPiece} ";
+                        _randomPiece = " ";
+                    }
+                    else
+                    {
+                        output2 += HorizontalFiller;
+                    }
+                }
+                middle += VerticalBorder + output2 + VerticalBorder + Environment.NewLine;
+            }
+
             return DisplayNextMove(_size) + DisplayTop(horizontalEdge) + middle +
                    DisplayBottom(horizontalEdge) + MakeLabel(_size);
         }
@@ -36,11 +73,6 @@ namespace Kata
             return LowerLeft + horizontalEdge + LowerRight + Environment.NewLine;
         }
 
-        private static string DisplayMiddle(int size)
-        {
-            return VerticalBorder + RepeatString(size, HorizontalFiller) + VerticalBorder + Environment.NewLine;
-        }
-
         private static string DisplayTop(string horizontalEdge)
         {
             return UpperLeft + horizontalEdge + UpperRight + Environment.NewLine;
@@ -48,10 +80,9 @@ namespace Kata
 
         private string DisplayNextMove(int size)
         {
-            var randomPiece = _randomGenerator.GetRandom(size);
             var chars = size*3 + 2;
             var top = Enumerable.Repeat(EmptySpace, chars).ToArray();
-            top[(chars - 1)/2] = randomPiece;
+            top[(chars - 1)/2] = _randomPiece;
             return string.Join("", top) + Environment.NewLine;
         }
 
@@ -61,14 +92,6 @@ namespace Kata
             for (var i = 0; i < size; i++)
                 output += i + 1 + LabelFiller;
             return output + Environment.NewLine;
-        }
-
-        private static string RepeatString(int size, string stringToRepeat)
-        {
-            var output = "";
-            for (var i = 0; i < size; i++)
-                output += stringToRepeat;
-            return output;
         }
     }
 }

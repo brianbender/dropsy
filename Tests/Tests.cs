@@ -47,8 +47,8 @@ namespace Tests
         [Test]
         public void Display9DisplaysA9X9Board()
         {
-            var testObj = new GridDisplayer(_fakeRandomGenerator, 9);
             _fakeRandomGenerator.NumberToReturn = 4;
+            var testObj = new GridDisplayer(_fakeRandomGenerator, 9);
             var output = testObj.DisplayBoard();
 
             var expected = "              4              " + Environment.NewLine +
@@ -64,6 +64,22 @@ namespace Tests
                            "│                           │" + Environment.NewLine +
                            "└───────────────────────────┘" + Environment.NewLine +
                            "  1  2  3  4  5  6  7  8  9  " + Environment.NewLine;
+
+            Assert.That(output, Is.EqualTo(expected));
+        }
+
+        [Test]
+        public void SelectColumn_DropsNumberOntoBoard()
+        {
+            var testObj = new GridDisplayer(_fakeRandomGenerator, 1);
+            testObj.DisplayBoard();
+            testObj.SelectColumn("1");
+            var output = testObj.DisplayBoard();
+            var expected = "     " + Environment.NewLine +
+                           "┌───┐" + Environment.NewLine +
+                           "│ 1 │" + Environment.NewLine +
+                           "└───┘" + Environment.NewLine +
+                           "  1  " + Environment.NewLine;
 
             Assert.That(output, Is.EqualTo(expected));
         }
