@@ -7,13 +7,13 @@ namespace Kata
         private static void Main(string[] args)
         {
             IRandomGenerator randomGenerator = new RandomGenerator();
-            var board = new Board(3, randomGenerator);
+            var board = new Board(9, randomGenerator);
             var game = new GridDisplayer(board);
             while (!game.GameIsOver)
             {
                 Console.Write(game.DisplayBoard());
                 var input = Console.ReadKey().KeyChar.ToString();
-                game.SelectColumn(input);
+                game.DoMove(input);
                 Console.Clear();
             }
             Console.Write(game.DisplayBoard());

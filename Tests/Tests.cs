@@ -20,7 +20,7 @@ namespace Tests
         {
             var testObj = new GridDisplayer(new Board(1, _fakeRandomGenerator));
             Assert.False(testObj.GameIsOver);
-            testObj.SelectColumn("1");
+            testObj.DoMove("1");
             Assert.True(testObj.GameIsOver);
         }
 
@@ -28,7 +28,7 @@ namespace Tests
         public void AddingChipToTwoByTwoDoesNotMeanGameOver()
         {
             var testObj = new GridDisplayer(new Board(2, _fakeRandomGenerator));
-            testObj.SelectColumn("1");
+            testObj.DoMove("1");
             Assert.False(testObj.GameIsOver);
         }
 
@@ -101,12 +101,12 @@ namespace Tests
         {
             _fakeRandomGenerator.NumberToReturn = 1;
             var testObj = new GridDisplayer(new Board(2, _fakeRandomGenerator));
-            testObj.SelectColumn("2");
+            testObj.DoMove("2");
             _fakeRandomGenerator.NumberToReturn = 2;
-            testObj.SelectColumn("2");
+            testObj.DoMove("2");
             var first = testObj.DisplayBoard();
             _fakeRandomGenerator.NumberToReturn = 1;
-            testObj.SelectColumn("2");
+            testObj.DoMove("2");
             var second = testObj.DisplayBoard();
             Assert.That(first, Is.EqualTo(second));
         }
@@ -118,7 +118,7 @@ namespace Tests
             var testObj = new GridDisplayer(new Board(2, _fakeRandomGenerator));
             testObj.DisplayBoard();
             _fakeRandomGenerator.NumberToReturn = 1;
-            testObj.SelectColumn("2");
+            testObj.DoMove("2");
             var output = testObj.DisplayBoard();
             var expected = "   1    " + Environment.NewLine +
                            "┌──────┐" + Environment.NewLine +
@@ -128,7 +128,7 @@ namespace Tests
                            "  1  2  " + Environment.NewLine;
 
             Assert.That(output, Is.EqualTo(expected));
-            testObj.SelectColumn("2");
+            testObj.DoMove("2");
             output = testObj.DisplayBoard();
 
             expected = "   1    " + Environment.NewLine +
@@ -139,6 +139,27 @@ namespace Tests
                        "  1  2  " + Environment.NewLine;
 
             Assert.That(output, Is.EqualTo(expected));
+        }
+
+        [Test]
+        public void AfterPlacingFivePiecesMakeARowOfBlocks()
+        {
+            _fakeRandomGenerator.NumberToReturn = 1;
+            var testObj = new GridDisplayer(new Board(3, _fakeRandomGenerator));
+            testObj.DoMove("1");
+            testObj.DoMove("1");
+            testObj.DoMove("2");
+            testObj.DoMove("2");
+            testObj.DoMove("3");
+            Assert.That(testObj.DisplayBoard(), Is.EqualTo(
+                "     1     " + Environment.NewLine +
+                "┌─────────┐" + Environment.NewLine +
+                "│ 1  1    │" + Environment.NewLine +
+                "│ 1  1  1 │" + Environment.NewLine +
+                "│ █  █  █ │" + Environment.NewLine +
+                "└─────────┘" + Environment.NewLine +
+                "  1  2  3  " + Environment.NewLine
+                ));
         }
     }
 }

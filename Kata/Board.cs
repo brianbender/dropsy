@@ -130,5 +130,18 @@ namespace Kata
         {
             return GetCellContent(row, column).Equals(" ");
         }
+
+        public void AddBlockRow()
+        {
+            for (var row = 1; row < _size; ++row)
+            {
+                for (var col = 0; col < _size; ++col)
+                {
+                    SetCellContent(row - 1, col, GetCellContent(row, col));
+                    if (row == _size - 1)
+                        SetCellContent(_size - 1, col, "█");
+                }
+            }
+        }
     }
 }
