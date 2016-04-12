@@ -13,6 +13,7 @@ namespace Kata
         private const string VerticalBorder = "│";
         private const string LabelFiller = "  ";
         private const string EmptySpace = " ";
+        private const string Block = "█";
         private readonly IRandomGenerator _randomGenerator;
         private readonly int _size;
         private string _bottomDisplay;
@@ -29,7 +30,7 @@ namespace Kata
             _randomPiece = _randomGenerator.GetRandom(_size);
         }
 
-        public bool GameIsOver { get; set; } = false;
+        public bool GameIsOver { get; set; }
 
         private void CreateCells()
         {
@@ -66,19 +67,16 @@ namespace Kata
 
         private void UpdateGameState()
         {
-            if (EveryCellHasAValue())
+            if (TopRowIsFilled())
                 GameIsOver = true;
         }
 
-        private bool EveryCellHasAValue()
+        private bool TopRowIsFilled()
         {
-            for (int row = 0; row < _size; row++)
+            for (var col = 0; col < _size; col++)
             {
-                for (int col = 0; col < _size; col++)
-                {
-                    if (CellIsEmpty(row, col))
-                        return false;
-                }
+                if (CellIsEmpty(_size - 1, col))
+                    return false;
             }
             return true;
         }
