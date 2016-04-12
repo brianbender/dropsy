@@ -161,5 +161,19 @@ namespace Tests
                 "  1  2  3  " + Environment.NewLine
                 ));
         }
+
+        [Test]
+        public void GameOverIfPieceGoesOffEdge()
+        {
+            _fakeRandomGenerator.NumberToReturn = 1;
+            var testObj = new GridDisplayer(new Board(3, _fakeRandomGenerator));
+            testObj.DoMove("1");
+            testObj.DoMove("1");
+            testObj.DoMove("1");
+            testObj.DoMove("2");
+            Assert.That(testObj.GameIsOver, Is.False);
+            testObj.DoMove("3");
+            Assert.That(testObj.GameIsOver, Is.True);
+        }
     }
 }

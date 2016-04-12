@@ -46,5 +46,22 @@ namespace Tests
             Assert.That(testObj.Display(), Is.EqualTo(expected));
         }
 
+
+        [Test]
+        public void ColumnOverFlowed_ReturnsFalseOnEmptyBoard()
+        {
+            var testObj = new Board(2, _fakeRandomGenerator);
+            Assert.False(testObj.ColumnOverFlowed());
+        }
+
+        [Test]
+        public void ColumnOverFlowed_ReturnsTrueIfColumnOverflowed()
+        {
+            var testObj = new Board(2, _fakeRandomGenerator);
+            testObj.PlaceChip(1);
+            testObj.PlaceChip(1);
+            testObj.AddBlockRow();
+            Assert.True(testObj.ColumnOverFlowed());
+        }
     }
 }

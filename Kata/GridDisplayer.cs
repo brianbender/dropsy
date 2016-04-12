@@ -36,7 +36,7 @@ namespace Kata
                 _board.AddBlockRow();
             }
 
-            if (_board.TopRowIsFilled())
+            if (_board.TopRowIsFilled() || _board.ColumnOverFlowed())
                 GameIsOver = true;
         }
 

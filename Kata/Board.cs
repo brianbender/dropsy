@@ -20,6 +20,7 @@ namespace Kata
         private string[,] _cellContents;
         private string _randomPiece;
         private string _topDisplay;
+        private bool _columnOverFlowed = false;
 
         public Board(int size, IRandomGenerator randomGenerator)
         {
@@ -133,6 +134,11 @@ namespace Kata
 
         public void AddBlockRow()
         {
+            for (var col = 0; col < _size; ++col)
+            {
+                if (!CellIsEmpty(0, col))
+                    _columnOverFlowed = true;
+            }
             for (var row = 1; row < _size; ++row)
             {
                 for (var col = 0; col < _size; ++col)
@@ -142,6 +148,11 @@ namespace Kata
                         SetCellContent(_size - 1, col, "█");
                 }
             }
+        }
+
+        public bool ColumnOverFlowed()
+        {
+            return _columnOverFlowed;
         }
     }
 }
