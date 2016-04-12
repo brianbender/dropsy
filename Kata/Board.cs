@@ -14,11 +14,11 @@ namespace Kata
         private const string LabelFiller = "  ";
         private const string EmptySpace = " ";
         private const string Block = "█";
-        private readonly int _size;
         private readonly IRandomGenerator _randomGenerator;
+        private readonly int _size;
+        private string _bottomDisplay;
         private string[,] _cellContents;
         private string _randomPiece;
-        private string _bottomDisplay;
         private string _topDisplay;
 
         public Board(int size, IRandomGenerator randomGenerator)
@@ -28,6 +28,34 @@ namespace Kata
             CreateCells();
             CreateTopAndBottom();
             _randomPiece = _randomGenerator.GetRandom(_size);
+        }
+
+        public string Display()
+        {
+            var middle = DrawInside();
+            return DisplayNextMove(_size) + _topDisplay + middle +
+                   _bottomDisplay;
+        }
+
+        public bool TopRowIsFilled()
+        {
+            for (var col = 0; col < _size; col++)
+            {
+                if (CellIsEmpty(0, col))
+                    return false;
+            }
+            return true;
+        }
+
+        public void PlaceChip(int column)
+        {
+            for (var row = _size - 1; row >= 0; row--)
+            {
+                if (!CellIsEmpty(row, column)) continue;
+                SetCellContent(row, column, _randomPiece);
+                _randomPiece = _randomGenerator.GetRandom(_size);
+                return;
+            }
         }
 
         private void CreateCells()
@@ -60,18 +88,11 @@ namespace Kata
             _topDisplay = UpperLeft + horizontalEdge + UpperRight + Environment.NewLine;
         }
 
-        public string Display()
-        {
-            var middle = DrawInside();
-            return DisplayNextMove(_size) + _topDisplay + middle +
-                   _bottomDisplay;
-        }
-
         private string DisplayNextMove(int size)
         {
-            var chars = size * 3 + 2;
+            var chars = size*3 + 2;
             var top = Enumerable.Repeat(EmptySpace, chars).ToArray();
-            top[(chars - 1) / 2] = GetNextPiece();
+            top[(chars - 1)/2] = _randomPiece;
             return string.Join("", top) + Environment.NewLine;
         }
 
@@ -90,25 +111,17 @@ namespace Kata
             return middle;
         }
 
-        public bool TopRowIsFilled()
-        {
-            for (var col = 0; col < _size; col++)
-            {
-                if (CellIsEmpty(0, col))
-                    return false;
-            }
-            return true;
-        }
         private void SetCellContent(int row, int col, string content)
         {
             _cellContents[row, col] = content;
         }
+
         private string GetCellContent(int row, int column)
         {
             return _cellContents[row, column];
         }
 
-        public string DrawCell(int column, int row)
+        private string DrawCell(int column, int row)
         {
             return $" {GetCellContent(row, column)} ";
         }
@@ -116,21 +129,6 @@ namespace Kata
         private bool CellIsEmpty(int row, int column)
         {
             return GetCellContent(row, column).Equals(" ");
-        }
-        public void PlaceChip(int column)
-        {
-            for (var row = _size - 1; row >= 0; row--)
-            {
-                if (!CellIsEmpty(row, column)) continue;
-                SetCellContent(row, column, _randomPiece);
-                _randomPiece = _randomGenerator.GetRandom(_size);
-                return;
-            }
-        }
-
-        public string GetNextPiece()
-        {
-            return _randomPiece;
         }
     }
 }

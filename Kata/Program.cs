@@ -7,8 +7,8 @@ namespace Kata
         private static void Main(string[] args)
         {
             IRandomGenerator randomGenerator = new RandomGenerator();
-            var board = new Board(9, randomGenerator);
-            var game = new GridDisplayer(9, board);
+            var board = new Board(3, randomGenerator);
+            var game = new GridDisplayer(board);
             while (!game.GameIsOver)
             {
                 Console.Write(game.DisplayBoard());

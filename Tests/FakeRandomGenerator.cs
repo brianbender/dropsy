@@ -2,7 +2,7 @@
 
 namespace Tests
 {
-    public class FakeRandomGenerator :IRandomGenerator
+    public class FakeRandomGenerator : IRandomGenerator
     {
         public int NumberToReturn;
 
