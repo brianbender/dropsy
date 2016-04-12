@@ -19,11 +19,11 @@ namespace Kata
         private string _topDisplay;
         private readonly Board _board;
 
-        public GridDisplayer(IRandomGenerator randomGenerator, int size)
+        public GridDisplayer(int size, Board board)
         {
             _size = size;
             CreateTopAndBottom();
-            _board = new Board(size, randomGenerator);
+            _board = board;
         }
 
         public bool GameIsOver { get; set; }
