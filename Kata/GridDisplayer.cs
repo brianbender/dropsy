@@ -14,40 +14,20 @@ namespace Kata
         private const string LabelFiller = "  ";
         private const string EmptySpace = " ";
         private const string Block = "█";
-        private readonly IRandomGenerator _randomGenerator;
         private readonly int _size;
         private string _bottomDisplay;
-        private string[,] _cellContents;
-        private string _randomPiece;
         private string _topDisplay;
+        private readonly Board _board;
 
         public GridDisplayer(IRandomGenerator randomGenerator, int size)
         {
-            _randomGenerator = randomGenerator;
             _size = size;
             CreateTopAndBottom();
-            CreateCells();
-            _randomPiece = _randomGenerator.GetRandom(_size);
+            _board = new Board(size, randomGenerator);
         }
 
         public bool GameIsOver { get; set; }
 
-        private void CreateCells()
-        {
-            _cellContents = new string[_size, _size];
-            for (var col = 0; col < _size; col++)
-            {
-                for (var row = 0; row < _size; row++)
-                {
-                    SetCellContent(row, col, " ");
-                }
-            }
-        }
-
-        private void SetCellContent(int row, int col, string content)
-        {
-            _cellContents[row, col] = content;
-        }
 
         private void CreateTopAndBottom()
         {
@@ -61,41 +41,16 @@ namespace Kata
 
         public void SelectColumn(string input)
         {
-            PlaceChip(input);
+
+            var column = GetColumnIndex(input);
+            _board.PlaceChip(column);
             UpdateGameState();
         }
 
         private void UpdateGameState()
         {
-            if (TopRowIsFilled())
+            if (_board.TopRowIsFilled())
                 GameIsOver = true;
-        }
-
-        private bool TopRowIsFilled()
-        {
-            for (var col = 0; col < _size; col++)
-            {
-                if (CellIsEmpty(_size - 1, col))
-                    return false;
-            }
-            return true;
-        }
-
-        private void PlaceChip(string input)
-        {
-            var column = GetColumnIndex(input);
-            for (var row = _size - 1; row >= 0; row --)
-            {
-                if (!CellIsEmpty(row, column)) continue;
-                SetCellContent(row, column, _randomPiece);
-                _randomPiece = _randomGenerator.GetRandom(_size);
-                return;
-            }
-        }
-
-        private bool CellIsEmpty(int row, int column)
-        {
-            return GetCellContent(row, column).Equals(" ");
         }
 
         private static int GetColumnIndex(string input)
@@ -118,28 +73,19 @@ namespace Kata
                 var rowText = "";
                 for (var column = 0; column < _size; column++)
                 {
-                    rowText += DrawCell(column, row);
+                    rowText += _board.DrawCell(column, row);
                 }
                 middle += string.Format("{0}{1}{0}{2}", VerticalBorder, rowText, Environment.NewLine);
             }
             return middle;
         }
 
-        private string DrawCell(int column, int row)
-        {
-            return $" {GetCellContent(row, column)} ";
-        }
-
-        private string GetCellContent(int row, int column)
-        {
-            return _cellContents[row, column];
-        }
-
+    
         private string DisplayNextMove(int size)
         {
             var chars = size*3 + 2;
             var top = Enumerable.Repeat(EmptySpace, chars).ToArray();
-            top[(chars - 1)/2] = _randomPiece;
+            top[(chars - 1)/2] = _board.GetNextPiece();
             return string.Join("", top) + Environment.NewLine;
         }
 
