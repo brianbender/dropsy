@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace Kata
@@ -14,13 +15,14 @@ namespace Kata
         private const string LabelFiller = "  ";
         private const string EmptySpace = " ";
         private const string Block = "█";
+        private const string Pop = "*";
         private readonly IRandomGenerator _randomGenerator;
         private readonly int _size;
         private string _bottomDisplay;
         private string[,] _cellContents;
+        private bool _columnOverFlowed;
         private string _randomPiece;
         private string _topDisplay;
-        private bool _columnOverFlowed = false;
 
         public Board(int size, IRandomGenerator randomGenerator)
         {
@@ -145,7 +147,7 @@ namespace Kata
                 {
                     SetCellContent(row - 1, col, GetCellContent(row, col));
                     if (row == _size - 1)
-                        SetCellContent(_size - 1, col, "█");
+                        SetCellContent(_size - 1, col, Block);
                 }
             }
         }
@@ -153,6 +155,45 @@ namespace Kata
         public bool ColumnOverFlowed()
         {
             return _columnOverFlowed;
+        }
+
+        public void ClearNumbers()
+        {
+            var numbersToClear = new Dictionary<int, HashSet<int>>();
+
+
+            for (var col = 0; col < _size; col++)
+            {
+                numbersToClear.Add(col, DoColumnWork(col, 0));
+            }
+
+            foreach (var kvp in numbersToClear)
+                foreach (var row in kvp.Value)
+                    SetCellContent(row, kvp.Key, Pop);
+        }
+
+        private HashSet<int> DoColumnWork(int col, int startingRow)
+        {
+            var numberInSeries = 0;
+            var columnsToClear = new HashSet<int>();
+            for (var row = startingRow; row < _size; row++)
+            {
+                if (CellIsEmpty(row, col))
+                {
+                    columnsToClear.UnionWith(DoColumnWork(col, startingRow + 1));
+                    break;
+                }
+                numberInSeries++;
+            }
+
+            //set of numbers to check is start to end
+            for (var row = startingRow; row < startingRow + numberInSeries; row++)
+            {
+                var cellContent = GetCellContent(row, col);
+                if (cellContent == numberInSeries.ToString())
+                    columnsToClear.Add(row);
+            }
+            return columnsToClear;
         }
     }
 }
