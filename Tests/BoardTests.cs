@@ -90,13 +90,38 @@ namespace Tests
         }
 
         [Test]
-        public void PopAndClearClearsCellsAfterSomeTime()
+        public void PopAndClearClearsCells()
         {
             var testObj = new Board(1, _fakeRandomGenerator);
+            var expected = testObj.Display();
             testObj.PlaceChip(0);
             var clearedCells = testObj.ClearNumbers();
             testObj.ClearPoppedCells(clearedCells);
+            Assert.That(testObj.Display(), Is.EqualTo(expected));
+        }
 
+        [Test]
+        public void PopAndClearClearsCellsAndMovesThemDown()
+        {
+            _fakeRandomGenerator.NumberToReturn = 2;
+            var testObj = new Board(3, _fakeRandomGenerator);
+            _fakeRandomGenerator.NumberToReturn = 3;
+            testObj.PlaceChip(0);
+            testObj.PlaceChip(0);
+            var clearedCells = testObj.ClearNumbers();
+            testObj.ClearPoppedCells(clearedCells);
+            var expected = "     3     \r\n┌─────────┐\r\n│         │\r\n│         │\r\n│ 3       │\r\n└─────────┘\r\n  1  2  3  \r\n";
+            Assert.That(testObj.Display(), Is.EqualTo(expected));
+        }
+
+        [Test]
+        public void ClearPoppedCellsDoesNotClearBlocks()
+        {
+            var testObj = new Board(2, _fakeRandomGenerator);
+            testObj.AddBlockRow();
+            var expected = testObj.Display();
+            testObj.ClearPoppedCells(new List<Tuple<int, int>> { new Tuple<int, int>(1, 1)});
+            Assert.That(testObj.Display(), Is.EqualTo(expected));
         }
 
         [Test]

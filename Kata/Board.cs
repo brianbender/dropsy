@@ -229,11 +229,27 @@ namespace Kata
 
         public void ClearPoppedCells(List<Tuple<int, int>> clearedCells)
         {
-            //foreach (var tuple in clearedCells)
-            //{
-            //    SetCellContent(tuple.Item1, tuple.Item2, EmptySpace);
-            //}
+            foreach (var tuple in clearedCells)
+            {
+                if (GetCellContent(tuple.Item1, tuple.Item2) != Block)
+                {
+                    PopAndDrop(tuple.Item1, tuple.Item2);
+                }
+                // TODO: This should try to popanddrop the column above the block, if that cell isn't a block
+                //else
+                //{
+                //    PopAndDrop(tuple.Item1, tuple.Item2 - 1);
+                //}
+            }
         }
 
+        private void PopAndDrop(int row, int col)
+        {
+            SetCellContent(row, col, EmptySpace);
+            for (var i = row; i > 0; --i)
+            {
+                SetCellContent(i, col, GetCellContent(i - 1, col));
+            }
+        }
     }
 }

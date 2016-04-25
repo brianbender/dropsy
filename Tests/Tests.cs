@@ -114,16 +114,16 @@ namespace Tests
         [Test]
         public void SelectColumn_PutsPiecesOnTheBoard()
         {
-            _fakeRandomGenerator.NumberToReturn = 2;
+            _fakeRandomGenerator.NumberToReturn = 6;
             var testObj = new GameController(new Board(2, _fakeRandomGenerator));
             testObj.DisplayBoard();
-            _fakeRandomGenerator.NumberToReturn = 1;
+            _fakeRandomGenerator.NumberToReturn = 5;
             testObj.DoMove("2");
             var output = testObj.DisplayBoard();
-            var expected = "   1    " + Environment.NewLine +
+            var expected = "   5    " + Environment.NewLine +
                            "┌──────┐" + Environment.NewLine +
                            "│      │" + Environment.NewLine +
-                           "│    2 │" + Environment.NewLine +
+                           "│    6 │" + Environment.NewLine +
                            "└──────┘" + Environment.NewLine +
                            "  1  2  " + Environment.NewLine;
 
@@ -131,10 +131,10 @@ namespace Tests
             testObj.DoMove("2");
             output = testObj.DisplayBoard();
 
-            expected = "   1    " + Environment.NewLine +
+            expected = "   5    " + Environment.NewLine +
                        "┌──────┐" + Environment.NewLine +
-                       "│    1 │" + Environment.NewLine +
-                       "│    2 │" + Environment.NewLine +
+                       "│    5 │" + Environment.NewLine +
+                       "│    6 │" + Environment.NewLine +
                        "└──────┘" + Environment.NewLine +
                        "  1  2  " + Environment.NewLine;
 
@@ -144,7 +144,7 @@ namespace Tests
         [Test]
         public void AfterPlacingFivePiecesMakeARowOfBlocks()
         {
-            _fakeRandomGenerator.NumberToReturn = 1;
+            _fakeRandomGenerator.NumberToReturn = 9;
             var testObj = new GameController(new Board(3, _fakeRandomGenerator));
             testObj.DoMove("1");
             testObj.DoMove("1");
@@ -152,10 +152,10 @@ namespace Tests
             testObj.DoMove("2");
             testObj.DoMove("3");
             Assert.That(testObj.DisplayBoard(), Is.EqualTo(
-                "     1     " + Environment.NewLine +
+                "     9     " + Environment.NewLine +
                 "┌─────────┐" + Environment.NewLine +
-                "│ 1  1    │" + Environment.NewLine +
-                "│ 1  1  1 │" + Environment.NewLine +
+                "│ 9  9    │" + Environment.NewLine +
+                "│ 9  9  9 │" + Environment.NewLine +
                 "│ █  █  █ │" + Environment.NewLine +
                 "└─────────┘" + Environment.NewLine +
                 "  1  2  3  " + Environment.NewLine
