@@ -157,30 +157,61 @@ namespace Kata
             return _columnOverFlowed;
         }
 
-        public void ClearNumbers()
+        public List<Tuple<int, int>> ClearNumbers()
         {
-            var numbersToClear = new Dictionary<int, HashSet<int>>();
-
+            var numbersToClear = new List<Tuple<int, int>>();
 
             for (var col = 0; col < _size; col++)
             {
-                numbersToClear.Add(col, DoColumnWork(col, 0));
+                numbersToClear = numbersToClear.Union(DoColumnWork(col, 0)).ToList();
             }
 
-            foreach (var kvp in numbersToClear)
-                foreach (var row in kvp.Value)
-                    SetCellContent(row, kvp.Key, Pop);
+            for (var row = 0; row < _size; row++)
+            {
+                numbersToClear = numbersToClear.Union(DoRowWork(row, 0)).ToList();
+            }
+
+
+            foreach (var tuple in numbersToClear)
+            {
+                SetCellContent(tuple.Item1, tuple.Item2, Pop);
+            }
+            return numbersToClear;
         }
 
-        private HashSet<int> DoColumnWork(int col, int startingRow)
+        private List<Tuple<int, int>> DoRowWork(int row, int startingCol)
         {
             var numberInSeries = 0;
-            var columnsToClear = new HashSet<int>();
+            var columnsToClear = new List<Tuple<int, int>>();
+            for (var col = startingCol; col < _size; col++)
+            {
+                if (CellIsEmpty(row, col))
+                {
+                    columnsToClear.AddRange(DoRowWork(row, startingCol + 1));
+                    break;
+                }
+                numberInSeries++;
+            }
+
+            //set of numbers to check is start to end
+            for (var col = startingCol; col < startingCol + numberInSeries; col++)
+            {
+                var cellContent = GetCellContent(row, col);
+                if (cellContent == numberInSeries.ToString())
+                    columnsToClear.Add(new Tuple<int, int>(row, col));
+            }
+            return columnsToClear;
+        }
+
+        private List<Tuple<int, int>> DoColumnWork(int col, int startingRow)
+        {
+            var numberInSeries = 0;
+            var cellsToClear = new List<Tuple<int, int>>();
             for (var row = startingRow; row < _size; row++)
             {
                 if (CellIsEmpty(row, col))
                 {
-                    columnsToClear.UnionWith(DoColumnWork(col, startingRow + 1));
+                    cellsToClear.AddRange(DoColumnWork(col, startingRow + 1));
                     break;
                 }
                 numberInSeries++;
@@ -191,9 +222,18 @@ namespace Kata
             {
                 var cellContent = GetCellContent(row, col);
                 if (cellContent == numberInSeries.ToString())
-                    columnsToClear.Add(row);
+                    cellsToClear.Add(new Tuple<int, int>(row, col));
             }
-            return columnsToClear;
+            return cellsToClear;
         }
+
+        public void ClearPoppedCells(List<Tuple<int, int>> clearedCells)
+        {
+            //foreach (var tuple in clearedCells)
+            //{
+            //    SetCellContent(tuple.Item1, tuple.Item2, EmptySpace);
+            //}
+        }
+
     }
 }

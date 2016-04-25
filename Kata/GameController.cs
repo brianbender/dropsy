@@ -1,13 +1,13 @@
-﻿using System.Runtime.Serialization.Formatters;
+﻿using System.Timers;
 
 namespace Kata
 {
-    public class GridDisplayer
+    public class GameController
     {
         private readonly Board _board;
         private int _movesTaken;
 
-        public GridDisplayer(Board board)
+        public GameController(Board board)
         {
             _board = board;
             _movesTaken = 0;
@@ -29,13 +29,15 @@ namespace Kata
 
         private void UpdateGameState()
         {
-
             _movesTaken++;
             if (_movesTaken%5 == 0)
             {
                 _board.AddBlockRow();
             }
-
+            var clearedCells = _board.ClearNumbers();
+            var timer = new Timer(500);
+            timer.Elapsed += delegate { _board.ClearPoppedCells(clearedCells); };
+            timer.Start();
             if (_board.TopRowIsFilled() || _board.ColumnOverFlowed())
                 GameIsOver = true;
         }

@@ -8,7 +8,7 @@ namespace Kata
         {
             IRandomGenerator randomGenerator = new RandomGenerator();
             var board = new Board(9, randomGenerator);
-            var game = new GridDisplayer(board);
+            var game = new GameController(board);
             while (!game.GameIsOver)
             {
                 Console.Write(game.DisplayBoard());

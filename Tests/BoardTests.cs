@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 using Kata;
 using NUnit.Framework;
 
@@ -46,19 +48,6 @@ namespace Tests
             Assert.That(testObj.Display(), Is.EqualTo(expected));
         }
 
-        [Test]
-        public void ChipRemoval_DoesNotClearForColumnOfTwoNumbersWithNoTwos()
-        {
-            _fakeRandomGenerator.NumberToReturn = 3;
-            var testObj = new Board(2, _fakeRandomGenerator);
-            testObj.PlaceChip(0);
-            testObj.PlaceChip(0);
-            var expected = testObj.Display();
-            testObj.ClearNumbers();
-            var result = testObj.Display();
-            Assert.That(result, Is.EqualTo(expected));
-        }
-
 
         [Test]
         public void ChipRemoval_DoesClearForColumnOfTwoNumbersWithTwos()
@@ -72,19 +61,65 @@ namespace Tests
             testObj.PlaceChip(0);
             testObj.ClearNumbers();
             var result = testObj.Display();
-            var expected = "     3     \r\n┌─────────┐\r\n│ *       │\r\n│ 4       │\r\n│ *       │\r\n└─────────┘\r\n  1  2  3  \r\n";
+            var expected =
+                "     3     \r\n┌─────────┐\r\n│ *       │\r\n│ 4       │\r\n│ *       │\r\n└─────────┘\r\n  1  2  3  \r\n";
             Assert.That(result, Is.EqualTo(expected));
         }
 
+        [Test]
+        public void ChipRemoval_DoesClearForRowOfTwoNumbersWithTwos()
+        {
+            _fakeRandomGenerator.NumberToReturn = 2;
+            var testObj = new Board(2, _fakeRandomGenerator);
+            testObj.PlaceChip(0);
+            testObj.PlaceChip(1);
+            var clearedNumbers = testObj.ClearNumbers();
+            IEnumerable expected = new List<Tuple<int, int>> { new Tuple<int, int>(1, 1), new Tuple<int, int>(1, 0) };
+            CollectionAssert.AreEquivalent(expected, clearedNumbers);
+        }
 
         [Test]
-        public void ChipRemoval_TestOne()
+        public void DisconnectedRowsWillPop()
+        {
+            var testObj = new Board(3, _fakeRandomGenerator);
+            testObj.PlaceChip(0);
+            testObj.PlaceChip(2);
+            var clearedNumbers = testObj.ClearNumbers();
+            IEnumerable expected = new List<Tuple<int,int>> {new Tuple<int, int>(2, 0), new Tuple<int, int>(2, 2) };
+            CollectionAssert.AreEquivalent(expected, clearedNumbers);
+        }
+
+        [Test]
+        public void PopAndClearClearsCellsAfterSomeTime()
         {
             var testObj = new Board(1, _fakeRandomGenerator);
             testObj.PlaceChip(0);
+            var clearedCells = testObj.ClearNumbers();
+            testObj.ClearPoppedCells(clearedCells);
+
+        }
+
+        [Test]
+        public void ChipRemoval_DoesNotClearForColumnOfTwoNumbersWithNoTwos()
+        {
+            _fakeRandomGenerator.NumberToReturn = 3;
+            var testObj = new Board(2, _fakeRandomGenerator);
+            testObj.PlaceChip(0);
+            testObj.PlaceChip(0);
+            var expected = testObj.Display();
             testObj.ClearNumbers();
-            var expected = "  1  \r\n┌───┐\r\n│ * │\r\n└───┘\r\n  1  \r\n";
-            Assert.That(testObj.Display(), Is.EqualTo(expected));
+            var result = testObj.Display();
+            Assert.That(result, Is.EqualTo(expected));
+        }
+
+        [Test]
+        public void ChipRemovalDoesNotClearNumbersThatAreNotMatchedToTheNumberInSequence()
+        {
+            _fakeRandomGenerator.NumberToReturn = 5;
+            var testObj = new Board(2, _fakeRandomGenerator);
+            testObj.PlaceChip(0);
+            var clearedNumbers = testObj.ClearNumbers();
+            Assert.That(clearedNumbers, Is.Empty);
         }
 
         [Test]
