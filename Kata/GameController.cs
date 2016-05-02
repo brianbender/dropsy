@@ -48,16 +48,16 @@ namespace Kata
                 _board.AddBlockRow();
             }
             var clearedCells = _board.ClearNumbers();
-            DisplayBoard();
-            Thread.Sleep(_sleepTime);
 
-            //var timer = new Timer(500);
-            //timer.Start();
-            //timer.Elapsed += delegate
-            //{
-            _board.ClearPoppedCells(clearedCells);
+            while (clearedCells.Count != 0)
+            {
+                DisplayBoard();
+                Thread.Sleep(_sleepTime);
+                _board.ClearPoppedCells(clearedCells);
+                clearedCells = _board.ClearNumbers();
+            }
             CanAcceptInput = true;
-            //};
+
             if (_board.TopRowIsFilled() || _board.ColumnOverFlowed())
                 GameIsOver = true;
         }

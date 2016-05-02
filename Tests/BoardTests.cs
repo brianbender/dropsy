@@ -74,54 +74,8 @@ namespace Tests
             testObj.PlaceChip(0);
             testObj.PlaceChip(1);
             var clearedNumbers = testObj.ClearNumbers();
-            IEnumerable expected = new List<Tuple<int, int>> { new Tuple<int, int>(1, 1), new Tuple<int, int>(1, 0) };
+            IEnumerable expected = new List<Tuple<int, int>> {new Tuple<int, int>(1, 1), new Tuple<int, int>(1, 0)};
             CollectionAssert.AreEquivalent(expected, clearedNumbers);
-        }
-
-        [Test]
-        public void DisconnectedRowsWillPop()
-        {
-            var testObj = new Board(3, _fakeRandomGenerator);
-            testObj.PlaceChip(0);
-            testObj.PlaceChip(2);
-            var clearedNumbers = testObj.ClearNumbers();
-            IEnumerable expected = new List<Tuple<int,int>> {new Tuple<int, int>(2, 0), new Tuple<int, int>(2, 2) };
-            CollectionAssert.AreEquivalent(expected, clearedNumbers);
-        }
-
-        [Test]
-        public void PopAndClearClearsCells()
-        {
-            var testObj = new Board(1, _fakeRandomGenerator);
-            var expected = testObj.Display();
-            testObj.PlaceChip(0);
-            var clearedCells = testObj.ClearNumbers();
-            testObj.ClearPoppedCells(clearedCells);
-            Assert.That(testObj.Display(), Is.EqualTo(expected));
-        }
-
-        [Test]
-        public void PopAndClearClearsCellsAndMovesThemDown()
-        {
-            _fakeRandomGenerator.NumberToReturn = 2;
-            var testObj = new Board(3, _fakeRandomGenerator);
-            _fakeRandomGenerator.NumberToReturn = 3;
-            testObj.PlaceChip(0);
-            testObj.PlaceChip(0);
-            var clearedCells = testObj.ClearNumbers();
-            testObj.ClearPoppedCells(clearedCells);
-            var expected = "     3     \r\n┌─────────┐\r\n│         │\r\n│         │\r\n│ 3       │\r\n└─────────┘\r\n  1  2  3  \r\n";
-            Assert.That(testObj.Display(), Is.EqualTo(expected));
-        }
-
-        [Test]
-        public void ClearPoppedCellsDoesNotClearBlocks()
-        {
-            var testObj = new Board(2, _fakeRandomGenerator);
-            testObj.AddBlockRow();
-            var expected = testObj.Display();
-            testObj.ClearPoppedCells(new List<Tuple<int, int>> { new Tuple<int, int>(1, 1)});
-            Assert.That(testObj.Display(), Is.EqualTo(expected));
         }
 
         [Test]
@@ -148,6 +102,32 @@ namespace Tests
         }
 
         [Test]
+        public void ClearPoppedCellClearsTwoCollsAndDropsNumber()
+        {
+            _fakeRandomGenerator.NumberToReturn = 3;
+            var testObj = new Board(3, _fakeRandomGenerator);
+            testObj.PlaceChip(0);
+            testObj.PlaceChip(0);
+            _fakeRandomGenerator.NumberToReturn = 2;
+            testObj.PlaceChip(0);
+
+
+            testObj.ClearPoppedCells(new List<Tuple<int, int>> {new Tuple<int, int>(2, 0), new Tuple<int, int>(1, 0)});
+            const string expected = "     2     \r\n┌─────────┐\r\n│         │\r\n│         │\r\n│ 2       │\r\n└─────────┘\r\n  1  2  3  \r\n";
+            Assert.That(testObj.Display(), Is.EqualTo(expected));
+        }
+
+        [Test]
+        public void ClearPoppedCellsDoesNotClearBlocks()
+        {
+            var testObj = new Board(2, _fakeRandomGenerator);
+            testObj.AddBlockRow();
+            var expected = testObj.Display();
+            testObj.ClearPoppedCells(new List<Tuple<int, int>> {new Tuple<int, int>(1, 1)});
+            Assert.That(testObj.Display(), Is.EqualTo(expected));
+        }
+
+        [Test]
         public void ColumnOverFlowed_ReturnsFalseOnEmptyBoard()
         {
             var testObj = new Board(2, _fakeRandomGenerator);
@@ -162,6 +142,43 @@ namespace Tests
             testObj.PlaceChip(1);
             testObj.AddBlockRow();
             Assert.True(testObj.ColumnOverFlowed());
+        }
+
+        [Test]
+        public void DisconnectedRowsWillPop()
+        {
+            var testObj = new Board(3, _fakeRandomGenerator);
+            testObj.PlaceChip(0);
+            testObj.PlaceChip(2);
+            var clearedNumbers = testObj.ClearNumbers();
+            IEnumerable expected = new List<Tuple<int, int>> {new Tuple<int, int>(2, 0), new Tuple<int, int>(2, 2)};
+            CollectionAssert.AreEquivalent(expected, clearedNumbers);
+        }
+
+        [Test]
+        public void PopAndClearClearsCells()
+        {
+            var testObj = new Board(1, _fakeRandomGenerator);
+            var expected = testObj.Display();
+            testObj.PlaceChip(0);
+            var clearedCells = testObj.ClearNumbers();
+            testObj.ClearPoppedCells(clearedCells);
+            Assert.That(testObj.Display(), Is.EqualTo(expected));
+        }
+
+        [Test]
+        public void PopAndClearClearsCellsAndMovesThemDown()
+        {
+            _fakeRandomGenerator.NumberToReturn = 2;
+            var testObj = new Board(3, _fakeRandomGenerator);
+            _fakeRandomGenerator.NumberToReturn = 3;
+            testObj.PlaceChip(0);
+            testObj.PlaceChip(0);
+            var clearedCells = testObj.ClearNumbers();
+            testObj.ClearPoppedCells(clearedCells);
+            var expected =
+                "     3     \r\n┌─────────┐\r\n│         │\r\n│         │\r\n│ 3       │\r\n└─────────┘\r\n  1  2  3  \r\n";
+            Assert.That(testObj.Display(), Is.EqualTo(expected));
         }
     }
 }

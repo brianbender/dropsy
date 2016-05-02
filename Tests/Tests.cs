@@ -14,13 +14,13 @@ namespace Tests
         }
 
         private FakeRandomGenerator _fakeRandomGenerator;
-        private readonly FakeConsoleWrapper _fakeConsoleWrapper = new FakeConsoleWrapper();
+        private readonly FakeConsoleWrapper _consoleWrapper = new FakeConsoleWrapper();
 
         [Test]
         public void AddingChipToOneByOneMeansGameOver()
         {
             _fakeRandomGenerator.NumberToReturn = 7;
-            var testObj = new GameController(new Board(1, _fakeRandomGenerator), _fakeConsoleWrapper);
+            var testObj = new GameController(new Board(1, _fakeRandomGenerator), _consoleWrapper);
             Assert.False(testObj.GameIsOver);
             testObj.DoMove("1");
             Assert.True(testObj.GameIsOver);
@@ -29,7 +29,7 @@ namespace Tests
         [Test]
         public void AddingChipToTwoByTwoDoesNotMeanGameOver()
         {
-            var testObj = new GameController(new Board(2, _fakeRandomGenerator), _fakeConsoleWrapper);
+            var testObj = new GameController(new Board(2, _fakeRandomGenerator), _consoleWrapper);
             testObj.DoMove("1");
             Assert.False(testObj.GameIsOver);
         }
@@ -38,14 +38,14 @@ namespace Tests
         public void AfterPlacingFivePiecesMakeARowOfBlocks()
         {
             _fakeRandomGenerator.NumberToReturn = 9;
-            var testObj = new GameController(new Board(3, _fakeRandomGenerator), _fakeConsoleWrapper);
+            var testObj = new GameController(new Board(3, _fakeRandomGenerator), _consoleWrapper);
             testObj.DoMove("1");
             testObj.DoMove("1");
             testObj.DoMove("2");
             testObj.DoMove("2");
             testObj.DoMove("3");
             testObj.DisplayBoard();
-            Assert.That(_fakeConsoleWrapper.LastWrite, Is.EqualTo(
+            Assert.That(_consoleWrapper.LastWrite, Is.EqualTo(
                 "     9     " + Environment.NewLine +
                 "┌─────────┐" + Environment.NewLine +
                 "│ 9  9    │" + Environment.NewLine +
@@ -60,21 +60,59 @@ namespace Tests
         public void CallingDisplayTwiceDisplaysTheSameBoard()
         {
             _fakeRandomGenerator.NumberToReturn = 2;
-            var testObj = new GameController(new Board(2, _fakeRandomGenerator), _fakeConsoleWrapper);
+            var testObj = new GameController(new Board(2, _fakeRandomGenerator), _consoleWrapper);
             testObj.DisplayBoard();
-            var firstBoard = _fakeConsoleWrapper.LastWrite;
+            var firstBoard = _consoleWrapper.LastWrite;
             _fakeRandomGenerator.NumberToReturn = 1;
             testObj.DisplayBoard();
-            var secondBoard = _fakeConsoleWrapper.LastWrite;
+            var secondBoard = _consoleWrapper.LastWrite;
             Assert.That(firstBoard, Is.EqualTo(secondBoard));
         }
 
         [Test]
+        public void CascadeBlockPop()
+        {
+            _fakeRandomGenerator.NumberToReturn = 2;
+            var board = new Board(3, _fakeRandomGenerator);
+            var testObj = new GameController(board, _consoleWrapper);
+            testObj.DisplayBoard();
+            var emptyBoard = _consoleWrapper.LastWrite;
+
+            _fakeRandomGenerator.NumberToReturn = 3;
+            testObj.DoMove("1");
+            _fakeRandomGenerator.NumberToReturn = 2;
+            testObj.DoMove("3");
+            testObj.DoMove("2");
+
+            testObj.DisplayBoard();
+            Assert.That(_consoleWrapper.LastWrite, Is.EqualTo(emptyBoard));
+        }
+
+        [Test]
+        public void CascadeBlockPop2()
+        {
+            _fakeRandomGenerator.NumberToReturn = 3;
+            var board = new Board(3, _fakeRandomGenerator);
+            var testObj = new GameController(board, _consoleWrapper);
+            testObj.DoMove("2");
+            testObj.DisplayBoard();
+            var thisBoard = _consoleWrapper.LastWrite;
+            testObj.DoMove("1");
+            _fakeRandomGenerator.NumberToReturn = 2;
+            testObj.DoMove("1");
+            testObj.DoMove("1");
+
+            testObj.DisplayBoard();
+            Assert.That(_consoleWrapper.LastWrite, Is.EqualTo(thisBoard));
+        }
+
+
+        [Test]
         public void Display1DisplaysA1X1Board()
         {
-            var testObj = new GameController(new Board(1, _fakeRandomGenerator), _fakeConsoleWrapper);
+            var testObj = new GameController(new Board(1, _fakeRandomGenerator), _consoleWrapper);
             testObj.DisplayBoard();
-            var output = _fakeConsoleWrapper.LastWrite;
+            var output = _consoleWrapper.LastWrite;
             var expected = "  1  " + Environment.NewLine +
                            "┌───┐" + Environment.NewLine +
                            "│   │" + Environment.NewLine +
@@ -87,9 +125,9 @@ namespace Tests
         [Test]
         public void Display2Displaysa2X2Board()
         {
-            var testObj = new GameController(new Board(2, _fakeRandomGenerator), _fakeConsoleWrapper);
+            var testObj = new GameController(new Board(2, _fakeRandomGenerator), _consoleWrapper);
             testObj.DisplayBoard();
-            var output = _fakeConsoleWrapper.LastWrite;
+            var output = _consoleWrapper.LastWrite;
             var expected = "   1    " + Environment.NewLine +
                            "┌──────┐" + Environment.NewLine +
                            "│      │" + Environment.NewLine +
@@ -104,9 +142,9 @@ namespace Tests
         public void Display9DisplaysA9X9Board()
         {
             _fakeRandomGenerator.NumberToReturn = 4;
-            var testObj = new GameController(new Board(9, _fakeRandomGenerator), _fakeConsoleWrapper);
+            var testObj = new GameController(new Board(9, _fakeRandomGenerator), _consoleWrapper);
             testObj.DisplayBoard();
-            var output = _fakeConsoleWrapper.LastWrite;
+            var output = _consoleWrapper.LastWrite;
 
             var expected = "              4              " + Environment.NewLine +
                            "┌───────────────────────────┐" + Environment.NewLine +
@@ -129,7 +167,7 @@ namespace Tests
         public void GameOverIfPieceGoesOffEdge()
         {
             _fakeRandomGenerator.NumberToReturn = 7;
-            var testObj = new GameController(new Board(3, _fakeRandomGenerator), _fakeConsoleWrapper);
+            var testObj = new GameController(new Board(3, _fakeRandomGenerator), _consoleWrapper);
             testObj.DoMove("1");
             testObj.DoMove("1");
             testObj.DoMove("1");
@@ -143,17 +181,17 @@ namespace Tests
         public void SelectColumn_DoesNotChangeBoardIfSelectedColumnFull()
         {
             _fakeRandomGenerator.NumberToReturn = 7;
-            var testObj = new GameController(new Board(2, _fakeRandomGenerator), _fakeConsoleWrapper);
+            var testObj = new GameController(new Board(2, _fakeRandomGenerator), _consoleWrapper);
             testObj.DoMove("2");
             _fakeRandomGenerator.NumberToReturn = 6;
             testObj.DoMove("2");
             testObj.DisplayBoard();
 
-            var first = _fakeConsoleWrapper.LastWrite;
+            var first = _consoleWrapper.LastWrite;
             _fakeRandomGenerator.NumberToReturn = 7;
             testObj.DoMove("2");
             testObj.DisplayBoard();
-            var second = _fakeConsoleWrapper.LastWrite;
+            var second = _consoleWrapper.LastWrite;
             Assert.That(first, Is.EqualTo(second));
         }
 
@@ -161,12 +199,12 @@ namespace Tests
         public void SelectColumn_PutsPiecesOnTheBoard()
         {
             _fakeRandomGenerator.NumberToReturn = 6;
-            var testObj = new GameController(new Board(2, _fakeRandomGenerator), _fakeConsoleWrapper);
+            var testObj = new GameController(new Board(2, _fakeRandomGenerator), _consoleWrapper);
             testObj.DisplayBoard();
             _fakeRandomGenerator.NumberToReturn = 5;
             testObj.DoMove("2");
             testObj.DisplayBoard();
-            var output = _fakeConsoleWrapper.LastWrite;
+            var output = _consoleWrapper.LastWrite;
             var expected = "   5    " + Environment.NewLine +
                            "┌──────┐" + Environment.NewLine +
                            "│      │" + Environment.NewLine +
@@ -178,7 +216,7 @@ namespace Tests
             testObj.DoMove("2");
             testObj.DisplayBoard();
 
-            output = _fakeConsoleWrapper.LastWrite;
+            output = _consoleWrapper.LastWrite;
             expected = "   5    " + Environment.NewLine +
                        "┌──────┐" + Environment.NewLine +
                        "│    5 │" + Environment.NewLine +
