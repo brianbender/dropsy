@@ -107,12 +107,12 @@ namespace Tests
             _fakeRandomGenerator.NumberToReturn = 3;
             var testObj = new Board(3, _fakeRandomGenerator);
             testObj.PlaceChip(0);
-            testObj.PlaceChip(0);
             _fakeRandomGenerator.NumberToReturn = 2;
             testObj.PlaceChip(0);
+            testObj.PlaceChip(0);
 
 
-            testObj.ClearPoppedCells(new List<Tuple<int, int>> {new Tuple<int, int>(2, 0), new Tuple<int, int>(1, 0)});
+            testObj.ClearPoppedCells(new List<Tuple<int, int>> {new Tuple<int, int>(1, 0), new Tuple<int, int>(2, 0)});
             const string expected = "     2     \r\n┌─────────┐\r\n│         │\r\n│         │\r\n│ 2       │\r\n└─────────┘\r\n  1  2  3  \r\n";
             Assert.That(testObj.Display(), Is.EqualTo(expected));
         }

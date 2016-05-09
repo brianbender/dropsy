@@ -95,15 +95,13 @@ namespace Tests
             var board = new Board(3, _fakeRandomGenerator);
             var testObj = new GameController(board, _consoleWrapper);
             testObj.DoMove("2");
-            testObj.DisplayBoard();
-            var thisBoard = _consoleWrapper.LastWrite;
             testObj.DoMove("1");
             _fakeRandomGenerator.NumberToReturn = 2;
             testObj.DoMove("1");
             testObj.DoMove("1");
-
             testObj.DisplayBoard();
-            Assert.That(_consoleWrapper.LastWrite, Is.EqualTo(thisBoard));
+            var expected = "     2     \r\n┌─────────┐\r\n│         │\r\n│         │\r\n│    3    │\r\n└─────────┘\r\n  1  2  3  \r\n";
+            Assert.That(_consoleWrapper.LastWrite, Is.EqualTo(expected));
         }
 
 

@@ -171,7 +171,6 @@ namespace Kata
                 numbersToClear = numbersToClear.Union(DoRowWork(row, 0)).ToList();
             }
 
-
             foreach (var tuple in numbersToClear)
             {
                 SetCellContent(tuple.Item1, tuple.Item2, Pop);
@@ -235,11 +234,6 @@ namespace Kata
                 {
                     PopAndDrop(tuple.Item1, tuple.Item2);
                 }
-                // TODO: This should try to popanddrop the column above the block, if that cell isn't a block
-                //else
-                //{
-                //    PopAndDrop(tuple.Item1, tuple.Item2 - 1);
-                //}
             }
         }
 
@@ -250,6 +244,7 @@ namespace Kata
             {
                 SetCellContent(i, col, GetCellContent(i - 1, col));
             }
+            SetCellContent(0, col, EmptySpace);
         }
     }
 }
