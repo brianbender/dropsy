@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Threading;
 
 namespace Kata
 {
@@ -9,7 +8,7 @@ namespace Kata
         {
             IRandomGenerator randomGenerator = new RandomGenerator();
             var board = new Board(9, randomGenerator);
-            var game = new GameController(board, new ConsoleWrapper(), 500);
+            var game = new GameController(board, new ConsoleWrapper(), 1000);
             while (!game.GameIsOver)
             {
                 game.DisplayBoard();
@@ -20,7 +19,7 @@ namespace Kata
                     game.DoMove(input);
                 }
             }
-           game.DisplayBoard();
+            game.DisplayBoard();
         }
     }
 }

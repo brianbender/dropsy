@@ -1,6 +1,4 @@
-﻿using System;
-using System.Threading;
-using Timer = System.Timers.Timer;
+﻿using System.Threading;
 
 namespace Kata
 {
@@ -8,8 +6,8 @@ namespace Kata
     {
         private readonly Board _board;
         private readonly ConsoleWrapper _consoleWrapper;
-        private int _movesTaken;
         private readonly int _sleepTime;
+        private int _movesTaken;
 
         public GameController(Board board, ConsoleWrapper consoleWrapper, int sleepTime = 0)
         {
@@ -18,7 +16,6 @@ namespace Kata
             _movesTaken = 0;
             CanAcceptInput = true;
             _sleepTime = sleepTime;
-
         }
 
         public bool GameIsOver { get; set; }
