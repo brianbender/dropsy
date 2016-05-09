@@ -175,12 +175,17 @@ namespace Kata
             foreach (var tuple in numbersToClear)
             {
                 SetCellContent(tuple.Item1, tuple.Item2, Pop);
-                if (tuple.Item1 + 1 < _size && GetCellContent(tuple.Item1 + 1, tuple.Item2) == Block)
-                {
-                    SetCellContent(tuple.Item1 + 1, tuple.Item2, CrackedBlock);
-                }
+                CrackBlock(tuple);
             }
             return numbersToClear;
+        }
+
+        private void CrackBlock(Tuple<int, int> tuple)
+        {
+            if (tuple.Item1 + 1 < _size && GetCellContent(tuple.Item1 + 1, tuple.Item2) == Block)
+            {
+                SetCellContent(tuple.Item1 + 1, tuple.Item2, CrackedBlock);
+            }
         }
 
         private List<Tuple<int, int>> DoRowWork(int row, int startingCol)
