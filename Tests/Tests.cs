@@ -57,6 +57,28 @@ namespace Tests
         }
 
         [Test]
+        public void PopingNumberInTopOfBlockCracksBlock()
+        {
+            _fakeRandomGenerator.NumberToReturn = 3;
+            var testObj = new GameController(new Board(3, _fakeRandomGenerator), _consoleWrapper);
+            testObj.DoMove("1");
+            testObj.DoMove("1");
+            testObj.DoMove("2");
+            testObj.DoMove("2");
+            testObj.DoMove("3");
+            testObj.DisplayBoard();
+            Assert.That(_consoleWrapper.LastWrite, Is.EqualTo(
+                "     3     " + Environment.NewLine +
+                "┌─────────┐" + Environment.NewLine +
+                "│         │" + Environment.NewLine +
+                "│         │" + Environment.NewLine +
+                "│ ▓  ▓  ▓ │" + Environment.NewLine +
+                "└─────────┘" + Environment.NewLine +
+                "  1  2  3  " + Environment.NewLine
+                ));
+        }
+
+        [Test]
         public void CallingDisplayTwiceDisplaysTheSameBoard()
         {
             _fakeRandomGenerator.NumberToReturn = 2;

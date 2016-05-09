@@ -16,6 +16,7 @@ namespace Kata
         private const string EmptySpace = " ";
         private const string Block = "█";
         private const string Pop = "*";
+        private const string CrackedBlock = "▓";
         private readonly IRandomGenerator _randomGenerator;
         private readonly int _size;
         private string _bottomDisplay;
@@ -174,6 +175,10 @@ namespace Kata
             foreach (var tuple in numbersToClear)
             {
                 SetCellContent(tuple.Item1, tuple.Item2, Pop);
+                if (tuple.Item1 + 1 < _size && GetCellContent(tuple.Item1 + 1, tuple.Item2) == Block)
+                {
+                    SetCellContent(tuple.Item1 + 1, tuple.Item2, CrackedBlock);
+                }
             }
             return numbersToClear;
         }
