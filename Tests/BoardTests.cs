@@ -67,6 +67,43 @@ namespace Tests
         }
 
         [Test]
+        public void ClearNumbers_RemovesBothInOnce()
+        {
+            _fakeRandomGenerator.NumberToReturn = 2;
+            var testObj = new Board(3, _fakeRandomGenerator);
+            _fakeRandomGenerator.NumberToReturn = 1;
+
+            testObj.PlaceChip(0);
+            testObj.PlaceChip(1);
+            testObj.ClearNumbers();
+            var expected =
+                "     1     \r\n┌─────────┐\r\n│         │\r\n│         │\r\n│ *  *    │\r\n└─────────┘\r\n  1  2  3  \r\n";
+            var result = testObj.Display();
+
+            Assert.That(result, Is.EqualTo(expected));
+
+        }
+
+        [Test]
+        public void ClearNumbers_RemovesAllIn2Steps()
+        {
+            _fakeRandomGenerator.NumberToReturn = 3;
+            var testObj = new Board(3, _fakeRandomGenerator);
+            _fakeRandomGenerator.NumberToReturn = 2;
+
+            testObj.PlaceChip(0);
+            testObj.PlaceChip(2);
+            testObj.PlaceChip(1);
+            var cells = testObj.ClearNumbers();
+            var expected = "     2     \r\n┌─────────┐\r\n│         │\r\n│         │\r\n│ *  2  2 │\r\n└─────────┘\r\n  1  2  3  \r\n";
+            Assert.That(testObj.Display(), Is.EqualTo(expected));
+            testObj.ClearPoppedCells(cells);
+            testObj.ClearNumbers();
+            expected = "     2     \r\n┌─────────┐\r\n│         │\r\n│         │\r\n│    *  * │\r\n└─────────┘\r\n  1  2  3  \r\n";
+            Assert.That(testObj.Display(), Is.EqualTo(expected));
+        }
+
+        [Test]
         public void ChipRemoval_DoesClearForRowOfTwoNumbersWithTwos()
         {
             _fakeRandomGenerator.NumberToReturn = 2;
@@ -116,6 +153,8 @@ namespace Tests
             const string expected = "     2     \r\n┌─────────┐\r\n│         │\r\n│         │\r\n│ 2       │\r\n└─────────┘\r\n  1  2  3  \r\n";
             Assert.That(testObj.Display(), Is.EqualTo(expected));
         }
+
+       
 
         [Test]
         public void ClearPoppedCellsDoesNotClearBlocks()
