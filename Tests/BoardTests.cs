@@ -85,6 +85,62 @@ namespace Tests
         }
 
         [Test]
+        public void ClearNumbers_PopsRowsWithGapsBecauseOfCascade()
+        {
+            _fakeRandomGenerator.NumberToReturn = 5;
+            var testObj = new Board(5, _fakeRandomGenerator);
+            _fakeRandomGenerator.NumberToReturn = 2;
+            testObj.PlaceChip(2);
+            testObj.PlaceChip(0);
+            testObj.PlaceChip(1);
+            testObj.PlaceChip(3);
+            testObj.PlaceChip(4);
+            var cells = testObj.ClearNumbers();
+            testObj.ClearPoppedCells(cells);
+            testObj.ClearNumbers();
+            var expected =
+           "        2        \r\n" +
+           "┌───────────────┐\r\n" +
+           "│               │\r\n" +
+           "│               │\r\n" +
+           "│               │\r\n" +
+           "│               │\r\n" +
+           "│ *  *     *  * │\r\n" +
+           "└───────────────┘\r\n" +
+           "  1  2  3  4  5  \r\n";
+            Assert.That(testObj.Display(), Is.EqualTo(expected));
+        }
+
+        [Test]
+        public void RowsPopInTwoSteps()
+        {
+            _fakeRandomGenerator.NumberToReturn = 4;
+            var testObj = new Board(6, _fakeRandomGenerator);
+            _fakeRandomGenerator.NumberToReturn = 5;
+            testObj.PlaceChip(0);
+            _fakeRandomGenerator.NumberToReturn = 7;
+            testObj.PlaceChip(1);
+            _fakeRandomGenerator.NumberToReturn = 3;
+            testObj.PlaceChip(2);
+            testObj.PlaceChip(3);
+
+            testObj.ClearNumbers();
+            var expected = 
+                "         3          \r\n" + 
+                "┌──────────────────┐\r\n" + 
+                "│                  │\r\n" + 
+                "│                  │\r\n" + 
+                "│                  │\r\n" + 
+                "│                  │\r\n" + 
+                "│                  │\r\n" + 
+                "│ *  5  7  3       │\r\n" + 
+                "└──────────────────┘\r\n" + 
+                "  1  2  3  4  5  6  \r\n";
+            var display = testObj.Display();
+            Assert.That(display, Is.EqualTo(expected));
+        }
+
+        [Test]
         public void ClearNumbers_RemovesAllIn2Steps()
         {
             _fakeRandomGenerator.NumberToReturn = 3;

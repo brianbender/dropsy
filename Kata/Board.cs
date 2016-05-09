@@ -186,7 +186,7 @@ namespace Kata
             {
                 if (CellIsEmpty(row, col))
                 {
-                    columnsToClear.AddRange(DoRowWork(row, startingCol + 1));
+                    columnsToClear.AddRange(DoRowWork(row, col + 1));
                     break;
                 }
                 numberInSeries++;
