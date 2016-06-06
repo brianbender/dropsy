@@ -31,7 +31,7 @@ namespace Kata
             _randomGenerator = randomGenerator;
             CreateCells();
             CreateTopAndBottom();
-            _randomPiece = _randomGenerator.GetRandom(_size);
+            _randomPiece = GetRandomChip();
         }
 
         public string Display()
@@ -57,7 +57,7 @@ namespace Kata
             {
                 if (!CellIsEmpty(row, column)) continue;
                 SetCellContent(row, column, _randomPiece);
-                _randomPiece = _randomGenerator.GetRandom(_size);
+                _randomPiece = GetRandomChip();
                 return;
             }
         }
@@ -188,8 +188,13 @@ namespace Kata
             }
             else if (tuple.Item1 + 1 < _size && GetCellContent(tuple.Item1 + 1, tuple.Item2) == CrackedBlock)
             {
-                SetCellContent(tuple.Item1 + 1, tuple.Item2, _randomGenerator.GetRandom(_size));
+                SetCellContent(tuple.Item1 + 1, tuple.Item2, GetRandomChip());
             }
+        }
+
+        private string GetRandomChip()
+        {
+            return _randomGenerator.GetRandom(_size);
         }
 
         private List<Tuple<int, int>> DoRowWork(int row, int startingCol)

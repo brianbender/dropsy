@@ -5,7 +5,7 @@ using NUnit.Framework;
 namespace Tests
 {
     [TestFixture]
-    public class Tests
+    public class GameControllerTests
     {
         [SetUp]
         public void SetUp()
@@ -57,52 +57,6 @@ namespace Tests
         }
 
         [Test]
-        public void PopingNumberInTopOfBlockCracksBlock()
-        {
-            _fakeRandomGenerator.NumberToReturn = 3;
-            var testObj = new GameController(new Board(3, _fakeRandomGenerator), _consoleWrapper);
-            testObj.DoMove("1");
-            testObj.DoMove("1");
-            testObj.DoMove("2");
-            testObj.DoMove("2");
-            testObj.DoMove("3");
-            testObj.DisplayBoard();
-            Assert.That(_consoleWrapper.LastWrite, Is.EqualTo(
-                "     3     " + Environment.NewLine +
-                "┌─────────┐" + Environment.NewLine +
-                "│         │" + Environment.NewLine +
-                "│         │" + Environment.NewLine +
-                "│ ▓  ▓  ▓ │" + Environment.NewLine +
-                "└─────────┘" + Environment.NewLine +
-                "  1  2  3  " + Environment.NewLine
-                ));
-        }
-
-        [Test]
-        public void PopingNumberInTopOfCrackedBlockRevealsNumber()
-        {
-            _fakeRandomGenerator.NumberToReturn = 3;
-            var testObj = new GameController(new Board(3, _fakeRandomGenerator), _consoleWrapper);
-            testObj.DoMove("1");
-            testObj.DoMove("1");
-            testObj.DoMove("2");
-            testObj.DoMove("2");
-            _fakeRandomGenerator.NumberToReturn = 2;
-            testObj.DoMove("3");
-            testObj.DoMove("1");
-            testObj.DisplayBoard();
-            Assert.That(_consoleWrapper.LastWrite, Is.EqualTo(
-               "     2     " + Environment.NewLine +
-               "┌─────────┐" + Environment.NewLine +
-               "│         │" + Environment.NewLine +
-               "│         │" + Environment.NewLine +
-               "│ 2  ▓  ▓ │" + Environment.NewLine +
-               "└─────────┘" + Environment.NewLine +
-               "  1  2  3  " + Environment.NewLine
-               ));
-        }
-
-        [Test]
         public void CallingDisplayTwiceDisplaysTheSameBoard()
         {
             _fakeRandomGenerator.NumberToReturn = 2;
@@ -146,7 +100,8 @@ namespace Tests
             testObj.DoMove("1");
             testObj.DoMove("1");
             testObj.DisplayBoard();
-            var expected = "     2     \r\n┌─────────┐\r\n│         │\r\n│         │\r\n│    3    │\r\n└─────────┘\r\n  1  2  3  \r\n";
+            var expected =
+                "     2     \r\n┌─────────┐\r\n│         │\r\n│         │\r\n│    3    │\r\n└─────────┘\r\n  1  2  3  \r\n";
             Assert.That(_consoleWrapper.LastWrite, Is.EqualTo(expected));
         }
 
@@ -219,6 +174,52 @@ namespace Tests
             Assert.That(testObj.GameIsOver, Is.False);
             testObj.DoMove("3");
             Assert.That(testObj.GameIsOver, Is.True);
+        }
+
+        [Test]
+        public void PopingNumberInTopOfBlockCracksBlock()
+        {
+            _fakeRandomGenerator.NumberToReturn = 3;
+            var testObj = new GameController(new Board(3, _fakeRandomGenerator), _consoleWrapper);
+            testObj.DoMove("1");
+            testObj.DoMove("1");
+            testObj.DoMove("2");
+            testObj.DoMove("2");
+            testObj.DoMove("3");
+            testObj.DisplayBoard();
+            Assert.That(_consoleWrapper.LastWrite, Is.EqualTo(
+                "     3     " + Environment.NewLine +
+                "┌─────────┐" + Environment.NewLine +
+                "│         │" + Environment.NewLine +
+                "│         │" + Environment.NewLine +
+                "│ ▓  ▓  ▓ │" + Environment.NewLine +
+                "└─────────┘" + Environment.NewLine +
+                "  1  2  3  " + Environment.NewLine
+                ));
+        }
+
+        [Test]
+        public void PopingNumberInTopOfCrackedBlockRevealsNumber()
+        {
+            _fakeRandomGenerator.NumberToReturn = 3;
+            var testObj = new GameController(new Board(3, _fakeRandomGenerator), _consoleWrapper);
+            testObj.DoMove("1");
+            testObj.DoMove("1");
+            testObj.DoMove("2");
+            testObj.DoMove("2");
+            _fakeRandomGenerator.NumberToReturn = 2;
+            testObj.DoMove("3");
+            testObj.DoMove("1");
+            testObj.DisplayBoard();
+            Assert.That(_consoleWrapper.LastWrite, Is.EqualTo(
+                "     2     " + Environment.NewLine +
+                "┌─────────┐" + Environment.NewLine +
+                "│         │" + Environment.NewLine +
+                "│         │" + Environment.NewLine +
+                "│ 2  ▓  ▓ │" + Environment.NewLine +
+                "└─────────┘" + Environment.NewLine +
+                "  1  2  3  " + Environment.NewLine
+                ));
         }
 
         [Test]
