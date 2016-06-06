@@ -186,6 +186,10 @@ namespace Kata
             {
                 SetCellContent(tuple.Item1 + 1, tuple.Item2, CrackedBlock);
             }
+            else if (tuple.Item1 + 1 < _size && GetCellContent(tuple.Item1 + 1, tuple.Item2) == CrackedBlock)
+            {
+                SetCellContent(tuple.Item1 + 1, tuple.Item2, _randomGenerator.GetRandom(_size));
+            }
         }
 
         private List<Tuple<int, int>> DoRowWork(int row, int startingCol)

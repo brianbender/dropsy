@@ -45,7 +45,6 @@ namespace Kata
                 _board.AddBlockRow();
             }
             var clearedCells = _board.ClearNumbers();
-
             while (clearedCells.Count != 0)
             {
                 DisplayBoard();
