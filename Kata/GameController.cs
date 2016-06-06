@@ -1,4 +1,6 @@
-﻿using System.Threading;
+﻿using System;
+using System.Collections.Generic;
+using System.Threading;
 
 namespace Kata
 {
@@ -44,14 +46,14 @@ namespace Kata
             {
                 _board.AddBlockRow();
             }
-            var clearedCells = _board.ClearNumbers();
-            while (clearedCells.Count != 0)
+            var clearedCells = new List<Tuple<int, int>>();
+            do
             {
                 DisplayBoard();
                 Thread.Sleep(_sleepTime);
                 _board.ClearPoppedCells(clearedCells);
                 clearedCells = _board.ClearNumbers();
-            }
+            } while (clearedCells.Count != 0);
             CanAcceptInput = true;
 
             if (_board.TopRowIsFilled() || _board.ColumnOverFlowed())
