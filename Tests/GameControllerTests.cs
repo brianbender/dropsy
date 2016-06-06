@@ -16,23 +16,6 @@ namespace Tests
         private FakeRandomGenerator _fakeRandomGenerator;
         private readonly FakeConsoleWrapper _consoleWrapper = new FakeConsoleWrapper();
 
-
-        [Test]
-        public void TheRightAmountOfWorkShouldBeDoneOnEachFrame()
-        {
-            /*
-             * The flow should be:
-             * 1) display board with new chip in correct column
-             * 2) any chips become asterisks that should
-             * 3) asterisk goes away and any blocks nearby crack
-             * 4) repeat until no changes in board
-             * 5) if necessary add row of blocks at bottom
-             * 6) see if anything new pops, repeat until no changes in board
-             */
-
-            Assert.Fail();
-        }
-
         [Test]
         public void AddingChipToOneByOneMeansGameOver()
         {
@@ -287,6 +270,23 @@ namespace Tests
                        "  1  2  " + Environment.NewLine;
 
             Assert.That(output, Is.EqualTo(expected));
+        }
+
+
+        [Test]
+        public void TheRightAmountOfWorkShouldBeDoneOnEachFrame()
+        {
+            /*
+             * The flow should be:
+             * 1) display board with new chip in correct column
+             * 2) any chips become asterisks that should
+             * 3) asterisk goes away and any blocks nearby crack
+             * 4) repeat until no changes in board
+             * 5) if necessary add row of blocks at bottom
+             * 6) see if anything new pops, repeat until no changes in board
+             */
+
+            Assert.Fail();
         }
     }
 }
