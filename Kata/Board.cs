@@ -14,9 +14,9 @@ namespace Kata
         private const string VerticalBorder = "│";
         private const string LabelFiller = "  ";
         private const string EmptySpace = " ";
-        private const string Block = "█";
         private const string Pop = "*";
-        private const string CrackedBlock = "▓";
+        public static readonly string Block = "█";
+        public static readonly string CrackedBlock = "▓";
         private readonly IRandomGenerator _randomGenerator;
         private readonly int _size;
         private string _bottomDisplay;
@@ -115,12 +115,12 @@ namespace Kata
             return middle;
         }
 
-        private void SetCellContent(int row, int col, string content)
+        protected void SetCellContent(int row, int col, string content)
         {
             _cellContents[row, col] = content;
         }
 
-        private string GetCellContent(int row, int column)
+        protected string GetCellContent(int row, int column)
         {
             return _cellContents[row, column];
         }
@@ -175,21 +175,35 @@ namespace Kata
             foreach (var tuple in numbersToClear)
             {
                 SetCellContent(tuple.Item1, tuple.Item2, Pop);
-                CrackBlock(tuple);
+                CrackAdjacentBlocks(tuple.Item1, tuple.Item2);
             }
             return numbersToClear;
         }
 
-        private void CrackBlock(Tuple<int, int> tuple)
+        private void CrackAdjacentBlocks(int row, int column)
         {
-            if (tuple.Item1 + 1 < _size && GetCellContent(tuple.Item1 + 1, tuple.Item2) == Block)
-            {
-                SetCellContent(tuple.Item1 + 1, tuple.Item2, CrackedBlock);
-            }
-            else if (tuple.Item1 + 1 < _size && GetCellContent(tuple.Item1 + 1, tuple.Item2) == CrackedBlock)
-            {
-                SetCellContent(tuple.Item1 + 1, tuple.Item2, GetRandomChip());
-            }
+            CrackBlock(row + 1, column);
+            CrackBlock(row - 1, column);
+            CrackBlock(row, column + 1);
+            CrackBlock(row, column - 1);
+        }
+
+        private void CrackBlock(int row, int column)
+        {
+            if (CellContentIs(row, column, Block))
+                SetCellContent(row, column, CrackedBlock);
+            else if (CellContentIs(row, column, CrackedBlock))
+                SetCellContent(row, column, GetRandomChip());
+        }
+
+        private bool CellContentIs(int row, int column, string contents)
+        {
+            return CellExists(row, column) && GetCellContent(row, column) == contents;
+        }
+
+        private bool CellExists(int row, int column)
+        {
+            return row < _size && column < _size && row >= 0 && column >= 0;
         }
 
         private string GetRandomChip()

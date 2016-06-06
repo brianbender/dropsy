@@ -17,6 +17,36 @@ namespace Tests
 
         private FakeRandomGenerator _fakeRandomGenerator;
 
+        public class TestBoard : Board
+        {
+            public TestBoard(int size, IRandomGenerator randomGenerator) : base(size, randomGenerator)
+            {
+            }
+
+            public void OverrideCellContent(int row, int col, string content)
+            {
+                SetCellContent(row, col, content);
+            }
+
+            public string GetCellContentForTest(int row, int col)
+            {
+                return GetCellContent(row, col);
+            }
+        }
+
+        [TestCase(1, 0)]
+        [TestCase(0, 1)]
+        [TestCase(-1, 0)]
+        [TestCase(0, -1)]
+        public void BlocksCrackInAllDirections(int rowOffset, int colOffset)
+        {
+            var testObj = new TestBoard(4, _fakeRandomGenerator);
+            testObj.OverrideCellContent(2, 2, Board.Block);
+            testObj.OverrideCellContent(2 + rowOffset, 2 + colOffset, "2");
+            testObj.ClearNumbers();
+            Assert.That(testObj.GetCellContentForTest(2, 2), Is.EqualTo(Board.CrackedBlock));
+        }
+
         [Test]
         public void AddBlockRow_PlacesBlockRowOnBottom()
         {
@@ -67,99 +97,6 @@ namespace Tests
         }
 
         [Test]
-        public void ClearNumbers_RemovesBothInOnce()
-        {
-            _fakeRandomGenerator.NumberToReturn = 2;
-            var testObj = new Board(3, _fakeRandomGenerator);
-            _fakeRandomGenerator.NumberToReturn = 1;
-
-            testObj.PlaceChip(0);
-            testObj.PlaceChip(1);
-            testObj.ClearNumbers();
-            var expected =
-                "     1     \r\n┌─────────┐\r\n│         │\r\n│         │\r\n│ *  *    │\r\n└─────────┘\r\n  1  2  3  \r\n";
-            var result = testObj.Display();
-
-            Assert.That(result, Is.EqualTo(expected));
-
-        }
-
-        [Test]
-        public void ClearNumbers_PopsRowsWithGapsBecauseOfCascade()
-        {
-            _fakeRandomGenerator.NumberToReturn = 5;
-            var testObj = new Board(5, _fakeRandomGenerator);
-            _fakeRandomGenerator.NumberToReturn = 2;
-            testObj.PlaceChip(2);
-            testObj.PlaceChip(0);
-            testObj.PlaceChip(1);
-            testObj.PlaceChip(3);
-            testObj.PlaceChip(4);
-            var cells = testObj.ClearNumbers();
-            testObj.ClearPoppedCells(cells);
-            testObj.ClearNumbers();
-            var expected =
-           "        2        \r\n" +
-           "┌───────────────┐\r\n" +
-           "│               │\r\n" +
-           "│               │\r\n" +
-           "│               │\r\n" +
-           "│               │\r\n" +
-           "│ *  *     *  * │\r\n" +
-           "└───────────────┘\r\n" +
-           "  1  2  3  4  5  \r\n";
-            Assert.That(testObj.Display(), Is.EqualTo(expected));
-        }
-
-        [Test]
-        public void RowsPopInTwoSteps()
-        {
-            _fakeRandomGenerator.NumberToReturn = 4;
-            var testObj = new Board(6, _fakeRandomGenerator);
-            _fakeRandomGenerator.NumberToReturn = 5;
-            testObj.PlaceChip(0);
-            _fakeRandomGenerator.NumberToReturn = 7;
-            testObj.PlaceChip(1);
-            _fakeRandomGenerator.NumberToReturn = 3;
-            testObj.PlaceChip(2);
-            testObj.PlaceChip(3);
-
-            testObj.ClearNumbers();
-            var expected = 
-                "         3          \r\n" + 
-                "┌──────────────────┐\r\n" + 
-                "│                  │\r\n" + 
-                "│                  │\r\n" + 
-                "│                  │\r\n" + 
-                "│                  │\r\n" + 
-                "│                  │\r\n" + 
-                "│ *  5  7  3       │\r\n" + 
-                "└──────────────────┘\r\n" + 
-                "  1  2  3  4  5  6  \r\n";
-            var display = testObj.Display();
-            Assert.That(display, Is.EqualTo(expected));
-        }
-
-        [Test]
-        public void ClearNumbers_RemovesAllIn2Steps()
-        {
-            _fakeRandomGenerator.NumberToReturn = 3;
-            var testObj = new Board(3, _fakeRandomGenerator);
-            _fakeRandomGenerator.NumberToReturn = 2;
-
-            testObj.PlaceChip(0);
-            testObj.PlaceChip(2);
-            testObj.PlaceChip(1);
-            var cells = testObj.ClearNumbers();
-            var expected = "     2     \r\n┌─────────┐\r\n│         │\r\n│         │\r\n│ *  2  2 │\r\n└─────────┘\r\n  1  2  3  \r\n";
-            Assert.That(testObj.Display(), Is.EqualTo(expected));
-            testObj.ClearPoppedCells(cells);
-            testObj.ClearNumbers();
-            expected = "     2     \r\n┌─────────┐\r\n│         │\r\n│         │\r\n│    *  * │\r\n└─────────┘\r\n  1  2  3  \r\n";
-            Assert.That(testObj.Display(), Is.EqualTo(expected));
-        }
-
-        [Test]
         public void ChipRemoval_DoesClearForRowOfTwoNumbersWithTwos()
         {
             _fakeRandomGenerator.NumberToReturn = 2;
@@ -195,6 +132,71 @@ namespace Tests
         }
 
         [Test]
+        public void ClearNumbers_PopsRowsWithGapsBecauseOfCascade()
+        {
+            _fakeRandomGenerator.NumberToReturn = 5;
+            var testObj = new Board(5, _fakeRandomGenerator);
+            _fakeRandomGenerator.NumberToReturn = 2;
+            testObj.PlaceChip(2);
+            testObj.PlaceChip(0);
+            testObj.PlaceChip(1);
+            testObj.PlaceChip(3);
+            testObj.PlaceChip(4);
+            var cells = testObj.ClearNumbers();
+            testObj.ClearPoppedCells(cells);
+            testObj.ClearNumbers();
+            var expected =
+                "        2        \r\n" +
+                "┌───────────────┐\r\n" +
+                "│               │\r\n" +
+                "│               │\r\n" +
+                "│               │\r\n" +
+                "│               │\r\n" +
+                "│ *  *     *  * │\r\n" +
+                "└───────────────┘\r\n" +
+                "  1  2  3  4  5  \r\n";
+            Assert.That(testObj.Display(), Is.EqualTo(expected));
+        }
+
+        [Test]
+        public void ClearNumbers_RemovesAllIn2Steps()
+        {
+            _fakeRandomGenerator.NumberToReturn = 3;
+            var testObj = new Board(3, _fakeRandomGenerator);
+            _fakeRandomGenerator.NumberToReturn = 2;
+
+            testObj.PlaceChip(0);
+            testObj.PlaceChip(2);
+            testObj.PlaceChip(1);
+            var cells = testObj.ClearNumbers();
+            var expected =
+                "     2     \r\n┌─────────┐\r\n│         │\r\n│         │\r\n│ *  2  2 │\r\n└─────────┘\r\n  1  2  3  \r\n";
+            Assert.That(testObj.Display(), Is.EqualTo(expected));
+            testObj.ClearPoppedCells(cells);
+            testObj.ClearNumbers();
+            expected =
+                "     2     \r\n┌─────────┐\r\n│         │\r\n│         │\r\n│    *  * │\r\n└─────────┘\r\n  1  2  3  \r\n";
+            Assert.That(testObj.Display(), Is.EqualTo(expected));
+        }
+
+        [Test]
+        public void ClearNumbers_RemovesBothInOnce()
+        {
+            _fakeRandomGenerator.NumberToReturn = 2;
+            var testObj = new Board(3, _fakeRandomGenerator);
+            _fakeRandomGenerator.NumberToReturn = 1;
+
+            testObj.PlaceChip(0);
+            testObj.PlaceChip(1);
+            testObj.ClearNumbers();
+            var expected =
+                "     1     \r\n┌─────────┐\r\n│         │\r\n│         │\r\n│ *  *    │\r\n└─────────┘\r\n  1  2  3  \r\n";
+            var result = testObj.Display();
+
+            Assert.That(result, Is.EqualTo(expected));
+        }
+
+        [Test]
         public void ClearPoppedCellClearsTwoCollsAndDropsNumber()
         {
             _fakeRandomGenerator.NumberToReturn = 3;
@@ -206,11 +208,11 @@ namespace Tests
 
 
             testObj.ClearPoppedCells(new List<Tuple<int, int>> {new Tuple<int, int>(1, 0), new Tuple<int, int>(2, 0)});
-            const string expected = "     2     \r\n┌─────────┐\r\n│         │\r\n│         │\r\n│ 2       │\r\n└─────────┘\r\n  1  2  3  \r\n";
+            const string expected =
+                "     2     \r\n┌─────────┐\r\n│         │\r\n│         │\r\n│ 2       │\r\n└─────────┘\r\n  1  2  3  \r\n";
             Assert.That(testObj.Display(), Is.EqualTo(expected));
         }
 
-       
 
         [Test]
         public void ClearPoppedCellsDoesNotClearBlocks()
@@ -274,6 +276,35 @@ namespace Tests
             var expected =
                 "     3     \r\n┌─────────┐\r\n│         │\r\n│         │\r\n│ 3       │\r\n└─────────┘\r\n  1  2  3  \r\n";
             Assert.That(testObj.Display(), Is.EqualTo(expected));
+        }
+
+        [Test]
+        public void RowsPopInTwoSteps()
+        {
+            _fakeRandomGenerator.NumberToReturn = 4;
+            var testObj = new Board(6, _fakeRandomGenerator);
+            _fakeRandomGenerator.NumberToReturn = 5;
+            testObj.PlaceChip(0);
+            _fakeRandomGenerator.NumberToReturn = 7;
+            testObj.PlaceChip(1);
+            _fakeRandomGenerator.NumberToReturn = 3;
+            testObj.PlaceChip(2);
+            testObj.PlaceChip(3);
+
+            testObj.ClearNumbers();
+            var expected =
+                "         3          \r\n" +
+                "┌──────────────────┐\r\n" +
+                "│                  │\r\n" +
+                "│                  │\r\n" +
+                "│                  │\r\n" +
+                "│                  │\r\n" +
+                "│                  │\r\n" +
+                "│ *  5  7  3       │\r\n" +
+                "└──────────────────┘\r\n" +
+                "  1  2  3  4  5  6  \r\n";
+            var display = testObj.Display();
+            Assert.That(display, Is.EqualTo(expected));
         }
     }
 }
