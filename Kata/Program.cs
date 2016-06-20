@@ -4,7 +4,7 @@ namespace Kata
 {
     internal class Program
     {
-        private static void Main(string[] args)
+        private static void Main()
         {
             IRandomGenerator randomGenerator = new RandomGenerator();
             var board = new Board(9, randomGenerator);
