@@ -43,12 +43,11 @@ namespace Kata
         {
             _movesTaken++;
      
-            var clearedCells = new List<Tuple<int, int>>();
-            ProcessBoardChanges(clearedCells);
+            ProcessBoardChanges();
             if (_movesTaken % 5 == 0)
             {
                 _board.AddBlockRow();
-                ProcessBoardChanges(clearedCells);
+                ProcessBoardChanges();
             }
             CanAcceptInput = true;
 
@@ -56,8 +55,9 @@ namespace Kata
                 GameIsOver = true;
         }
 
-        private void ProcessBoardChanges(List<Tuple<int, int>> clearedCells)
+        private void ProcessBoardChanges()
         {
+            var clearedCells = new List<Tuple<int, int>>();
             do
             {
                 DisplayBoard();

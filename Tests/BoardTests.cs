@@ -80,6 +80,59 @@ namespace Tests
 
 
         [Test]
+        public void ClearOnlyPopsBlockOnce_EvenIfRowAndColumnShouldCausePop()
+        {
+            _fakeRandomGenerator.SetRandomNumbers(3, 2);
+            var testObj = new Board(3, _fakeRandomGenerator);
+            testObj.AddBlockRow();
+            testObj.PlaceChip(1);
+            testObj.PlaceChip(0);
+            var clears = testObj.ClearNumbers();
+            testObj.ClearPoppedCells(clears);
+            var expected =
+                "     1     " + Environment.NewLine +
+                "┌─────────┐" + Environment.NewLine +
+                "│         │" + Environment.NewLine +
+                "│    3    │" + Environment.NewLine +
+                "│ ▓  █  █ │" + Environment.NewLine +
+                "└─────────┘" + Environment.NewLine +
+                "  1  2  3  " + Environment.NewLine;
+
+            Assert.That(testObj.Display(), Is.EqualTo(expected));
+        }
+
+        [Test]
+        public void StackingAndPoppingWorks()
+        {
+            _fakeRandomGenerator.SetRandomNumbers(4, 5);
+            var testObj = new Board(4, _fakeRandomGenerator);
+            testObj.AddBlockRow();
+            testObj.AddBlockRow();
+            testObj.PlaceChip(0);
+            testObj.PlaceChip(0);
+            var clears = testObj.ClearNumbers();
+            testObj.ClearPoppedCells(clears);
+            var expected =
+                "      1       " + Environment.NewLine +
+                "┌────────────┐" + Environment.NewLine +
+                "│            │" + Environment.NewLine +
+                "│ 5          │" + Environment.NewLine +
+                "│ ▓  █  █  █ │" + Environment.NewLine +
+                "│ █  █  █  █ │" + Environment.NewLine +
+                "└────────────┘" + Environment.NewLine +
+                "  1  2  3  4  " + Environment.NewLine;
+
+            Assert.That(testObj.Display(), Is.EqualTo(expected));
+        }
+
+        [Test]
+        public void GoCheckOutBugDotTextAndLookAtTheStarThatDoesNotGoAway()
+        {
+            Assert.Fail("READ THE TEST NAME");
+        }
+
+
+        [Test]
         public void ChipRemoval_DoesClearForColumnOfTwoNumbersWithTwos()
         {
             _fakeRandomGenerator.NumberToReturn = 3;
@@ -104,7 +157,7 @@ namespace Tests
             testObj.PlaceChip(0);
             testObj.PlaceChip(1);
             var clearedNumbers = testObj.ClearNumbers();
-            IEnumerable expected = new List<Tuple<int, int>> {new Tuple<int, int>(1, 1), new Tuple<int, int>(1, 0)};
+            IEnumerable expected = new List<Tuple<int, int>> { new Tuple<int, int>(1, 1), new Tuple<int, int>(1, 0) };
             CollectionAssert.AreEquivalent(expected, clearedNumbers);
         }
 
@@ -207,7 +260,7 @@ namespace Tests
             testObj.PlaceChip(0);
 
 
-            testObj.ClearPoppedCells(new List<Tuple<int, int>> {new Tuple<int, int>(1, 0), new Tuple<int, int>(2, 0)});
+            testObj.ClearPoppedCells(new List<Tuple<int, int>> { new Tuple<int, int>(1, 0), new Tuple<int, int>(2, 0) });
             const string expected =
                 "     2     \r\n┌─────────┐\r\n│         │\r\n│         │\r\n│ 2       │\r\n└─────────┘\r\n  1  2  3  \r\n";
             Assert.That(testObj.Display(), Is.EqualTo(expected));
@@ -220,7 +273,7 @@ namespace Tests
             var testObj = new Board(2, _fakeRandomGenerator);
             testObj.AddBlockRow();
             var expected = testObj.Display();
-            testObj.ClearPoppedCells(new List<Tuple<int, int>> {new Tuple<int, int>(1, 1)});
+            testObj.ClearPoppedCells(new List<Tuple<int, int>> { new Tuple<int, int>(1, 1) });
             Assert.That(testObj.Display(), Is.EqualTo(expected));
         }
 
@@ -248,7 +301,7 @@ namespace Tests
             testObj.PlaceChip(0);
             testObj.PlaceChip(2);
             var clearedNumbers = testObj.ClearNumbers();
-            IEnumerable expected = new List<Tuple<int, int>> {new Tuple<int, int>(2, 0), new Tuple<int, int>(2, 2)};
+            IEnumerable expected = new List<Tuple<int, int>> { new Tuple<int, int>(2, 0), new Tuple<int, int>(2, 2) };
             CollectionAssert.AreEquivalent(expected, clearedNumbers);
         }
 
