@@ -177,7 +177,7 @@ namespace Tests
         }
 
         [Test]
-        public void PopingNumberInTopOfBlockCracksBlock()
+        public void BlockRowsAreAddedAfterPoppingNumbers()
         {
             _fakeRandomGenerator.NumberToReturn = 3;
             var testObj = new GameController(new Board(3, _fakeRandomGenerator), _consoleWrapper);
@@ -191,8 +191,35 @@ namespace Tests
                 "     3     " + Environment.NewLine +
                 "┌─────────┐" + Environment.NewLine +
                 "│         │" + Environment.NewLine +
+                "│ 3  3    │" + Environment.NewLine +
+                "│ █  █  █ │" + Environment.NewLine +
+                "└─────────┘" + Environment.NewLine +
+                "  1  2  3  " + Environment.NewLine
+                ));
+        }
+
+        [Test]
+        public void CrackingBlocksReavealsDifferentRandomNumbers()
+        {
+            _fakeRandomGenerator.NumberToReturn = 3;
+            var testObj = new GameController(new Board(3, _fakeRandomGenerator), _consoleWrapper);
+            testObj.DoMove("1");
+            testObj.DoMove("1");
+            testObj.DoMove("2");
+            testObj.DoMove("2");
+            testObj.DoMove("3");
+            testObj.DoMove("3");
+            testObj.DoMove("1");
+            testObj.DoMove("2");
+            _fakeRandomGenerator.SetRandomNumbers(1, 4, 5, 6);
+            testObj.DoMove("3");
+            testObj.DisplayBoard();
+            Assert.That(_consoleWrapper.LastWrite, Is.EqualTo(
+                "     1     " + Environment.NewLine +
+                "┌─────────┐" + Environment.NewLine +
                 "│         │" + Environment.NewLine +
-                "│ ▓  ▓  ▓ │" + Environment.NewLine +
+                "│         │" + Environment.NewLine +
+                "│ 4  5  6 │" + Environment.NewLine +
                 "└─────────┘" + Environment.NewLine +
                 "  1  2  3  " + Environment.NewLine
                 ));
@@ -209,14 +236,15 @@ namespace Tests
             testObj.DoMove("2");
             _fakeRandomGenerator.NumberToReturn = 2;
             testObj.DoMove("3");
+            _fakeRandomGenerator.NumberToReturn = 5;
             testObj.DoMove("1");
             testObj.DisplayBoard();
             Assert.That(_consoleWrapper.LastWrite, Is.EqualTo(
-                "     2     " + Environment.NewLine +
+                "     5     " + Environment.NewLine +
                 "┌─────────┐" + Environment.NewLine +
                 "│         │" + Environment.NewLine +
-                "│         │" + Environment.NewLine +
-                "│ 2  ▓  ▓ │" + Environment.NewLine +
+                "│    3    │" + Environment.NewLine +
+                "│ 5  █  █ │" + Environment.NewLine +
                 "└─────────┘" + Environment.NewLine +
                 "  1  2  3  " + Environment.NewLine
                 ));
@@ -270,23 +298,6 @@ namespace Tests
                        "  1  2  " + Environment.NewLine;
 
             Assert.That(output, Is.EqualTo(expected));
-        }
-
-
-        [Test]
-        public void TheRightAmountOfWorkShouldBeDoneOnEachFrame()
-        {
-            /*
-             * The flow should be:
-             * 1) display board with new chip in correct column
-             * 2) any chips become asterisks that should
-             * 3) asterisk goes away and any blocks nearby crack
-             * 4) repeat until no changes in board
-             * 5) if necessary add row of blocks at bottom
-             * 6) see if anything new pops, repeat until no changes in board
-             */
-
-            Assert.Fail();
         }
     }
 }

@@ -42,11 +42,22 @@ namespace Kata
         private void UpdateGameState()
         {
             _movesTaken++;
-            if (_movesTaken%5 == 0)
+     
+            var clearedCells = new List<Tuple<int, int>>();
+            ProcessBoardChanges(clearedCells);
+            if (_movesTaken % 5 == 0)
             {
                 _board.AddBlockRow();
+                ProcessBoardChanges(clearedCells);
             }
-            var clearedCells = new List<Tuple<int, int>>();
+            CanAcceptInput = true;
+
+            if (_board.TopRowIsFilled() || _board.ColumnOverFlowed())
+                GameIsOver = true;
+        }
+
+        private void ProcessBoardChanges(List<Tuple<int, int>> clearedCells)
+        {
             do
             {
                 DisplayBoard();
@@ -54,10 +65,6 @@ namespace Kata
                 _board.ClearPoppedCells(clearedCells);
                 clearedCells = _board.ClearNumbers();
             } while (clearedCells.Count != 0);
-            CanAcceptInput = true;
-
-            if (_board.TopRowIsFilled() || _board.ColumnOverFlowed())
-                GameIsOver = true;
         }
 
 
