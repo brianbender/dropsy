@@ -46,7 +46,7 @@
     <Compile Include="BoardTests.cs" />
     <Compile Include="FakeConsoleWrapper.cs" />
     <Compile Include="FakeRandomGenerator.cs" />
-    <Compile Include="Tests.cs" />
+    <Compile Include="GameControllerTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

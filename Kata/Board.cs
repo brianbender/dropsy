@@ -14,8 +14,9 @@ namespace Kata
         private const string VerticalBorder = "│";
         private const string LabelFiller = "  ";
         private const string EmptySpace = " ";
-        private const string Block = "█";
         private const string Pop = "*";
+        public static readonly string Block = "█";
+        public static readonly string CrackedBlock = "▓";
         private readonly IRandomGenerator _randomGenerator;
         private readonly int _size;
         private string _bottomDisplay;
@@ -30,7 +31,7 @@ namespace Kata
             _randomGenerator = randomGenerator;
             CreateCells();
             CreateTopAndBottom();
-            _randomPiece = _randomGenerator.GetRandom(_size);
+            _randomPiece = GetRandomChip();
         }
 
         public string Display()
@@ -56,7 +57,7 @@ namespace Kata
             {
                 if (!CellIsEmpty(row, column)) continue;
                 SetCellContent(row, column, _randomPiece);
-                _randomPiece = _randomGenerator.GetRandom(_size);
+                _randomPiece = GetRandomChip();
                 return;
             }
         }
@@ -114,12 +115,12 @@ namespace Kata
             return middle;
         }
 
-        private void SetCellContent(int row, int col, string content)
+        protected void SetCellContent(int row, int col, string content)
         {
             _cellContents[row, col] = content;
         }
 
-        private string GetCellContent(int row, int column)
+        protected string GetCellContent(int row, int column)
         {
             return _cellContents[row, column];
         }
@@ -171,12 +172,43 @@ namespace Kata
                 numbersToClear = numbersToClear.Union(DoRowWork(row, 0)).ToList();
             }
 
-
             foreach (var tuple in numbersToClear)
             {
                 SetCellContent(tuple.Item1, tuple.Item2, Pop);
+                CrackAdjacentBlocks(tuple.Item1, tuple.Item2);
             }
             return numbersToClear;
+        }
+
+        private void CrackAdjacentBlocks(int row, int column)
+        {
+            CrackBlock(row + 1, column);
+            CrackBlock(row - 1, column);
+            CrackBlock(row, column + 1);
+            CrackBlock(row, column - 1);
+        }
+
+        private void CrackBlock(int row, int column)
+        {
+            if (CellContentIs(row, column, Block))
+                SetCellContent(row, column, CrackedBlock);
+            else if (CellContentIs(row, column, CrackedBlock))
+                SetCellContent(row, column, GetRandomChip());
+        }
+
+        private bool CellContentIs(int row, int column, string contents)
+        {
+            return CellExists(row, column) && GetCellContent(row, column) == contents;
+        }
+
+        private bool CellExists(int row, int column)
+        {
+            return row < _size && column < _size && row >= 0 && column >= 0;
+        }
+
+        private string GetRandomChip()
+        {
+            return _randomGenerator.GetRandom(_size);
         }
 
         private List<Tuple<int, int>> DoRowWork(int row, int startingCol)
@@ -187,7 +219,7 @@ namespace Kata
             {
                 if (CellIsEmpty(row, col))
                 {
-                    columnsToClear.AddRange(DoRowWork(row, startingCol + 1));
+                    columnsToClear.AddRange(DoRowWork(row, col + 1));
                     break;
                 }
                 numberInSeries++;
@@ -235,11 +267,6 @@ namespace Kata
                 {
                     PopAndDrop(tuple.Item1, tuple.Item2);
                 }
-                // TODO: This should try to popanddrop the column above the block, if that cell isn't a block
-                //else
-                //{
-                //    PopAndDrop(tuple.Item1, tuple.Item2 - 1);
-                //}
             }
         }
 
@@ -250,6 +277,7 @@ namespace Kata
             {
                 SetCellContent(i, col, GetCellContent(i - 1, col));
             }
+            SetCellContent(0, col, EmptySpace);
         }
     }
 }

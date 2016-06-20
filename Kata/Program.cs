@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Threading;
 
 namespace Kata
 {
@@ -20,7 +19,7 @@ namespace Kata
                     game.DoMove(input);
                 }
             }
-           game.DisplayBoard();
+            game.DisplayBoard();
         }
     }
 }

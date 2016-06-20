@@ -1,6 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading;
-using Timer = System.Timers.Timer;
 
 namespace Kata
 {
@@ -8,8 +8,8 @@ namespace Kata
     {
         private readonly Board _board;
         private readonly ConsoleWrapper _consoleWrapper;
-        private int _movesTaken;
         private readonly int _sleepTime;
+        private int _movesTaken;
 
         public GameController(Board board, ConsoleWrapper consoleWrapper, int sleepTime = 0)
         {
@@ -18,7 +18,6 @@ namespace Kata
             _movesTaken = 0;
             CanAcceptInput = true;
             _sleepTime = sleepTime;
-
         }
 
         public bool GameIsOver { get; set; }
@@ -47,15 +46,14 @@ namespace Kata
             {
                 _board.AddBlockRow();
             }
-            var clearedCells = _board.ClearNumbers();
-
-            while (clearedCells.Count != 0)
+            var clearedCells = new List<Tuple<int, int>>();
+            do
             {
                 DisplayBoard();
                 Thread.Sleep(_sleepTime);
                 _board.ClearPoppedCells(clearedCells);
                 clearedCells = _board.ClearNumbers();
-            }
+            } while (clearedCells.Count != 0);
             CanAcceptInput = true;
 
             if (_board.TopRowIsFilled() || _board.ColumnOverFlowed())
