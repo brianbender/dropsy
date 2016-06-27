@@ -164,12 +164,14 @@ namespace Kata
 
             for (var col = 0; col < _size; col++)
             {
-                numbersToClear = numbersToClear.Union(DoColumnWork(col, 0)).ToList();
+                var columns = DoColumnWork(col, 0);
+                numbersToClear = numbersToClear.Union(columns).ToList();
             }
 
             for (var row = 0; row < _size; row++)
             {
-                numbersToClear = numbersToClear.Union(DoRowWork(row, 0)).ToList();
+                var rows = DoRowWork(row, 0);
+                numbersToClear = numbersToClear.Union(rows).ToList();
             }
 
             foreach (var tuple in numbersToClear)
@@ -177,7 +179,7 @@ namespace Kata
                 SetCellContent(tuple.Item1, tuple.Item2, Pop);
                 CrackAdjacentBlocks(tuple.Item1, tuple.Item2);
             }
-            return numbersToClear;
+            return numbersToClear.OrderBy(c=>c.Item1).ThenBy(c=>c.Item2).ToList();
         }
 
         private void CrackAdjacentBlocks(int row, int column)
@@ -211,7 +213,7 @@ namespace Kata
             return _randomGenerator.GetRandom(_size);
         }
 
-        private List<Tuple<int, int>> DoRowWork(int row, int startingCol)
+        private IEnumerable<Tuple<int, int>> DoRowWork(int row, int startingCol)
         {
             var numberInSeries = 0;
             var columnsToClear = new List<Tuple<int, int>>();
@@ -235,7 +237,7 @@ namespace Kata
             return columnsToClear;
         }
 
-        private List<Tuple<int, int>> DoColumnWork(int col, int startingRow)
+        private IEnumerable<Tuple<int, int>> DoColumnWork(int col, int startingRow)
         {
             var numberInSeries = 0;
             var cellsToClear = new List<Tuple<int, int>>();
