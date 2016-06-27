@@ -1,4 +1,8 @@
-﻿using Kata;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using Kata;
+using NUnit.Framework;
 
 namespace Tests
 {
@@ -6,11 +10,13 @@ namespace Tests
     {
         public bool ClearCalled { get; set; }
 
-        public string LastWrite { get; set; }
+        public string LastWrite => AllWrites.Last();
+
+        public List<string> AllWrites { get; set; } = new List<string>();
 
         public override void Write(string output)
         {
-            LastWrite = output;
+            AllWrites.Add(output);
         }
 
         public override void Clear()

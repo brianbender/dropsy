@@ -320,8 +320,7 @@ namespace Tests
             testObj.PlaceChip(0);
             var clearedCells = testObj.ClearNumbers();
             testObj.ClearPoppedCells(clearedCells);
-            var expected =
-                "     3     \r\n┌─────────┐\r\n│         │\r\n│         │\r\n│ 3       │\r\n└─────────┘\r\n  1  2  3  \r\n";
+            const string expected = "     3     \r\n┌─────────┐\r\n│         │\r\n│         │\r\n│ 3       │\r\n└─────────┘\r\n  1  2  3  \r\n";
             Assert.That(testObj.Display(), Is.EqualTo(expected));
         }
 

@@ -63,6 +63,8 @@ namespace Kata
                 DisplayBoard();
                 Thread.Sleep(_sleepTime);
                 _board.ClearPoppedCells(clearedCells);
+                DisplayBoard();
+                Thread.Sleep(_sleepTime);
                 clearedCells = _board.ClearNumbers();
             } while (clearedCells.Count != 0);
         }
