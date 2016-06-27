@@ -325,6 +325,17 @@ namespace Tests
         }
 
         [Test]
+        public void DoTheNextThing()
+        {
+            Assert.Fail(@"for every chip that pops
+
+score the board size(9 points on a 9x9 board) (done)
+
+display total score on bottom left of screen (write these tests)
+display last score on bottom right of screen");
+        }
+
+        [Test]
         public void SelectColumn_DoesNotChangeBoardIfSelectedColumnFull()
         {
             _fakeRandomGenerator.NumberToReturn = 7;
