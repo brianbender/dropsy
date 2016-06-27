@@ -6,18 +6,29 @@ namespace Kata
 {
     public class GameController
     {
-        private readonly Board _board;
+        protected readonly Board Board;
         private readonly ConsoleWrapper _consoleWrapper;
         private readonly int _sleepTime;
         private int _movesTaken;
+        public int CurrentScore;
+        public int TotalScore;
+        private int _boardSize;
 
-        public GameController(Board board, ConsoleWrapper consoleWrapper, int sleepTime = 0)
+        private GameController(Board board, ConsoleWrapper consoleWrapper, int sleepTime = 0)
         {
-            _board = board;
+            Board = board;
             _consoleWrapper = consoleWrapper;
             _movesTaken = 0;
             CanAcceptInput = true;
             _sleepTime = sleepTime;
+            CurrentScore = 0;
+            TotalScore = 0;
+        }
+
+        public GameController(int board, IRandomGenerator randomGenerator, ConsoleWrapper consoleWrapper, int sleepTime = 0)
+            : this(new Board(board, randomGenerator), consoleWrapper, sleepTime)
+        {
+            _boardSize = board;
         }
 
         public bool GameIsOver { get; set; }
@@ -29,43 +40,46 @@ namespace Kata
                 return;
             CanAcceptInput = false;
             var column = GetColumnIndex(input);
-            _board.PlaceChip(column);
+            Board.PlaceChip(column);
             UpdateGameState();
         }
 
         public void DisplayBoard()
         {
             _consoleWrapper.Clear();
-            _consoleWrapper.Write(_board.Display());
+            _consoleWrapper.Write(Board.Display());
         }
 
         private void UpdateGameState()
         {
             _movesTaken++;
-     
+
             ProcessBoardChanges();
-            if (_movesTaken % 5 == 0)
+            if (_movesTaken%5 == 0)
             {
-                _board.AddBlockRow();
+                Board.AddBlockRow();
                 ProcessBoardChanges();
             }
             CanAcceptInput = true;
 
-            if (_board.TopRowIsFilled() || _board.ColumnOverFlowed())
+            if (Board.TopRowIsFilled() || Board.ColumnOverFlowed())
                 GameIsOver = true;
         }
 
         private void ProcessBoardChanges()
         {
+            CurrentScore = 0;
             var clearedCells = new List<Tuple<int, int>>();
             do
             {
                 DisplayBoard();
                 Thread.Sleep(_sleepTime);
-                _board.ClearPoppedCells(clearedCells);
+                Board.ClearPoppedCells(clearedCells);
                 DisplayBoard();
                 Thread.Sleep(_sleepTime);
-                clearedCells = _board.ClearNumbers();
+                clearedCells = Board.ClearNumbers();
+                CurrentScore += clearedCells.Count * _boardSize;
+                TotalScore += clearedCells.Count * _boardSize;
             } while (clearedCells.Count != 0);
         }
 
