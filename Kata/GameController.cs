@@ -6,13 +6,11 @@ namespace Kata
 {
     public class GameController
     {
-        private readonly int _boardSize;
         private readonly ConsoleWrapper _consoleWrapper;
         private readonly int _sleepTime;
         protected readonly Board Board;
         private int _movesTaken;
-        public int CurrentScore;
-        public int TotalScore;
+        private readonly Scoring _scoring;
 
         private GameController(Board board, ConsoleWrapper consoleWrapper, int sleepTime = 0)
         {
@@ -21,15 +19,13 @@ namespace Kata
             _movesTaken = 0;
             CanAcceptInput = true;
             _sleepTime = sleepTime;
-            CurrentScore = 0;
-            TotalScore = 0;
         }
 
-        public GameController(int board, IRandomGenerator randomGenerator, ConsoleWrapper consoleWrapper,
+        public GameController(int boardSize, IRandomGenerator randomGenerator, ConsoleWrapper consoleWrapper,
             int sleepTime = 0)
-            : this(new Board(board, randomGenerator), consoleWrapper, sleepTime)
+            : this(new Board(boardSize, randomGenerator), consoleWrapper, sleepTime)
         {
-            _boardSize = board;
+            _scoring = new Scoring(boardSize);
         }
 
         public bool GameIsOver { get; set; }
@@ -75,7 +71,7 @@ namespace Kata
 
         private void ProcessBoardChanges()
         {
-            CurrentScore = 0;
+            _scoring.Reset();
             var clearedCells = new List<Tuple<int, int>>();
             do
             {
@@ -85,8 +81,7 @@ namespace Kata
                 Draw();
                 Thread.Sleep(_sleepTime);
                 clearedCells = Board.ClearNumbers();
-                CurrentScore += clearedCells.Count*_boardSize;
-                TotalScore += clearedCells.Count*_boardSize;
+                _scoring.AddPoints(clearedCells.Count);
             } while (clearedCells.Count != 0);
         }
 
@@ -98,7 +93,7 @@ namespace Kata
 
         public void DisplayScore()
         {
-            _consoleWrapper.Write($"{TotalScore,-10}         {CurrentScore,10}" + Environment.NewLine);
+            _consoleWrapper.Write(_scoring.GetScoreDisplay() + Environment.NewLine);
         }
     }
 }

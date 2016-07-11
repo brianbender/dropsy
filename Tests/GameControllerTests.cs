@@ -19,9 +19,9 @@ namespace Tests
 
         private class BrokenEncapsulationGameController : GameController
         {
-            public BrokenEncapsulationGameController(int board, IRandomGenerator randomGenerator,
+            public BrokenEncapsulationGameController(int boardSize, IRandomGenerator randomGenerator,
                 ConsoleWrapper consoleWrapper, int sleepTime = 0)
-                : base(board, randomGenerator, consoleWrapper, sleepTime)
+                : base(boardSize, randomGenerator, consoleWrapper, sleepTime)
             {
             }
 
@@ -167,21 +167,6 @@ namespace Tests
                 ));
         }
 
-        [Test]
-        public void CurrentScoreResetsAfterEachMove()
-        {
-            _fakeRandomGenerator.NumberToReturn = 1;
-            var testObj = new GameController(1, _fakeRandomGenerator, _consoleWrapper);
-
-            testObj.DoMove("1");
-            Assert.That(testObj.CurrentScore, Is.EqualTo(1));
-            Assert.That(testObj.TotalScore, Is.EqualTo(1));
-
-            testObj.DoMove("1");
-            Assert.That(testObj.CurrentScore, Is.EqualTo(1));
-            Assert.That(testObj.TotalScore, Is.EqualTo(2));
-        }
-
 
         [Test]
         public void Display1DisplaysA1X1Board()
@@ -239,46 +224,36 @@ namespace Tests
             Assert.That(output, Is.EqualTo(expected));
         }
 
-        [Test]
-        public void DisplayScore_ShowsTheTotalScoreOnTheBottomLeftAndCurrentOnTheBottomRight()
-        {
-            var testObj = new GameController(1, _fakeRandomGenerator, _consoleWrapper)
-            {
-                TotalScore = 50,
-                CurrentScore = 1
-            };
-            testObj.DisplayScore();
-            Assert.That(_consoleWrapper.LastWrite, Is.EqualTo("50                          1\r\n"));
-        }
+   
+
 
         [Test]
-        public void DisplayScore_StaysAt30Characters()
+        public void NewScoring()
         {
-            var testObj = new GameController(1, _fakeRandomGenerator, _consoleWrapper)
-            {
-                TotalScore = 5000,
-                CurrentScore = 1000
-            };
-            testObj.DisplayScore();
-            Assert.That(_consoleWrapper.LastWrite, Is.EqualTo("5000                     1000\r\n"));
-        }
+            Assert.Fail(@"
+Every time we cascade, increase the score factor by 2.5 power
 
+count of pops ^ 2.5 * 9
+
+(pops * 9) * (count of cascades ^ 2.5)
+
+pop 1
+cascades and pops 2
+
+9
+(2 * 9) * (2 ^ 2.5)
+(n * 9) * (3 ^ 2.5)
+
+Whole score of the move is the floor of the sum of those cascading numbers");
+        }
         [Test]
         public void Draw_DisplaysTheBoardAndTheScore()
         {
-            var testObj = new GameController(1, _fakeRandomGenerator, _consoleWrapper)
-            {
-                TotalScore = 1,
-                CurrentScore = 10
-            };
+            var testObj = new GameController(1, _fakeRandomGenerator, _consoleWrapper);
             testObj.Draw();
 
             var otherConsoleWrapper = new FakeConsoleWrapper();
-            var otherTestObj = new GameController(1, _fakeRandomGenerator, otherConsoleWrapper)
-            {
-                TotalScore = 1,
-                CurrentScore = 10
-            };
+            var otherTestObj = new GameController(1, _fakeRandomGenerator, otherConsoleWrapper);
             otherTestObj.DisplayBoard();
             otherTestObj.DisplayScore();
 
@@ -353,22 +328,9 @@ namespace Tests
             var testObj = new GameController(1, _fakeRandomGenerator, _consoleWrapper);
             testObj.DoMove("1");
 
-            Assert.That(testObj.CurrentScore, Is.EqualTo(1));
-            Assert.That(testObj.TotalScore, Is.EqualTo(1));
-        }
+            testObj.DisplayScore();
 
-        [Test]
-        public void ScoringIsBasedOnBoardSize()
-        {
-            _fakeRandomGenerator.NumberToReturn = 2;
-            var testObj = new GameController(2, _fakeRandomGenerator, _consoleWrapper);
-
-            testObj.DoMove("1");
-            Assert.That(testObj.CurrentScore, Is.EqualTo(0));
-
-            testObj.DoMove("1");
-            Assert.That(testObj.CurrentScore, Is.EqualTo(4));
-            Assert.That(testObj.TotalScore, Is.EqualTo(4));
+            Assert.That(_consoleWrapper.LastWrite, Is.EqualTo("1                           1\r\n"));
         }
 
         [Test]
