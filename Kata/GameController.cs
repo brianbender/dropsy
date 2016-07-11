@@ -6,13 +6,13 @@ namespace Kata
 {
     public class GameController
     {
-        protected readonly Board Board;
+        private readonly int _boardSize;
         private readonly ConsoleWrapper _consoleWrapper;
         private readonly int _sleepTime;
+        protected readonly Board Board;
         private int _movesTaken;
         public int CurrentScore;
         public int TotalScore;
-        private int _boardSize;
 
         private GameController(Board board, ConsoleWrapper consoleWrapper, int sleepTime = 0)
         {
@@ -25,7 +25,8 @@ namespace Kata
             TotalScore = 0;
         }
 
-        public GameController(int board, IRandomGenerator randomGenerator, ConsoleWrapper consoleWrapper, int sleepTime = 0)
+        public GameController(int board, IRandomGenerator randomGenerator, ConsoleWrapper consoleWrapper,
+            int sleepTime = 0)
             : this(new Board(board, randomGenerator), consoleWrapper, sleepTime)
         {
             _boardSize = board;
@@ -48,6 +49,12 @@ namespace Kata
         {
             _consoleWrapper.Clear();
             _consoleWrapper.Write(Board.Display());
+        }
+
+        public void DrawGame()
+        {
+            DisplayBoard();
+            DisplayScore();
         }
 
         private void UpdateGameState()
@@ -78,8 +85,8 @@ namespace Kata
                 DisplayBoard();
                 Thread.Sleep(_sleepTime);
                 clearedCells = Board.ClearNumbers();
-                CurrentScore += clearedCells.Count * _boardSize;
-                TotalScore += clearedCells.Count * _boardSize;
+                CurrentScore += clearedCells.Count*_boardSize;
+                TotalScore += clearedCells.Count*_boardSize;
             } while (clearedCells.Count != 0);
         }
 
@@ -87,6 +94,11 @@ namespace Kata
         private static int GetColumnIndex(string input)
         {
             return int.Parse(input) - 1;
+        }
+
+        public void DisplayScore()
+        {
+            _consoleWrapper.Write(TotalScore + "                           " + CurrentScore);
         }
     }
 }

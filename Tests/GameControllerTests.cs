@@ -11,10 +11,11 @@ namespace Tests
         public void SetUp()
         {
             _fakeRandomGenerator = new FakeRandomGenerator(1);
+            _consoleWrapper = new FakeConsoleWrapper();
         }
 
         private FakeRandomGenerator _fakeRandomGenerator;
-        private readonly FakeConsoleWrapper _consoleWrapper = new FakeConsoleWrapper();
+        private FakeConsoleWrapper _consoleWrapper;
 
         private class BrokenEncapsulationGameController : GameController
         {
@@ -239,6 +240,40 @@ namespace Tests
         }
 
         [Test]
+        public void DisplayScore_ShowsTheTotalScoreOnTheBottomLeftAndCurrentOnTheBottomRight()
+        {
+            var testObj = new GameController(1, _fakeRandomGenerator, _consoleWrapper)
+            {
+                TotalScore = 50,
+                CurrentScore = 1
+            };
+            testObj.DisplayScore();
+            Assert.That(_consoleWrapper.LastWrite, Is.EqualTo("50                           1"));
+        }
+
+        [Test]
+        public void DrawGame_DisplaysTheBoardAndTheScore()
+        {
+            var testObj = new GameController(1, _fakeRandomGenerator, _consoleWrapper)
+            {
+                TotalScore = 1,
+                CurrentScore = 10
+            };
+            testObj.DrawGame();
+
+            var otherConsoleWrapper = new FakeConsoleWrapper();
+            var otherTestObj = new GameController(1, _fakeRandomGenerator, otherConsoleWrapper)
+            {
+                TotalScore = 1,
+                CurrentScore = 10
+            };
+            otherTestObj.DisplayBoard();
+            otherTestObj.DisplayScore();
+
+            Assert.That(_consoleWrapper.AllWrites, Is.EqualTo(otherConsoleWrapper.AllWrites));
+        }
+
+        [Test]
         public void GameOverIfPieceGoesOffEdge()
         {
             _fakeRandomGenerator.NumberToReturn = 7;
@@ -322,17 +357,6 @@ namespace Tests
             testObj.DoMove("1");
             Assert.That(testObj.CurrentScore, Is.EqualTo(4));
             Assert.That(testObj.TotalScore, Is.EqualTo(4));
-        }
-
-        [Test]
-        public void DoTheNextThing()
-        {
-            Assert.Fail(@"for every chip that pops
-
-score the board size(9 points on a 9x9 board) (done)
-
-display total score on bottom left of screen (write these tests)
-display last score on bottom right of screen");
         }
 
         [Test]
