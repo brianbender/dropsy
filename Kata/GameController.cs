@@ -51,7 +51,7 @@ namespace Kata
             _consoleWrapper.Write(Board.Display());
         }
 
-        public void DrawGame()
+        public void Draw()
         {
             DisplayBoard();
             DisplayScore();
@@ -79,10 +79,10 @@ namespace Kata
             var clearedCells = new List<Tuple<int, int>>();
             do
             {
-                DisplayBoard();
+                Draw();
                 Thread.Sleep(_sleepTime);
                 Board.ClearPoppedCells(clearedCells);
-                DisplayBoard();
+                Draw();
                 Thread.Sleep(_sleepTime);
                 clearedCells = Board.ClearNumbers();
                 CurrentScore += clearedCells.Count*_boardSize;
@@ -98,7 +98,7 @@ namespace Kata
 
         public void DisplayScore()
         {
-            _consoleWrapper.Write(TotalScore + "                           " + CurrentScore);
+            _consoleWrapper.Write($"{TotalScore,-10}         {CurrentScore,10}" + Environment.NewLine);
         }
     }
 }

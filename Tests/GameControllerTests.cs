@@ -248,18 +248,30 @@ namespace Tests
                 CurrentScore = 1
             };
             testObj.DisplayScore();
-            Assert.That(_consoleWrapper.LastWrite, Is.EqualTo("50                           1"));
+            Assert.That(_consoleWrapper.LastWrite, Is.EqualTo("50                          1\r\n"));
         }
 
         [Test]
-        public void DrawGame_DisplaysTheBoardAndTheScore()
+        public void DisplayScore_StaysAt30Characters()
+        {
+            var testObj = new GameController(1, _fakeRandomGenerator, _consoleWrapper)
+            {
+                TotalScore = 5000,
+                CurrentScore = 1000
+            };
+            testObj.DisplayScore();
+            Assert.That(_consoleWrapper.LastWrite, Is.EqualTo("5000                     1000\r\n"));
+        }
+
+        [Test]
+        public void Draw_DisplaysTheBoardAndTheScore()
         {
             var testObj = new GameController(1, _fakeRandomGenerator, _consoleWrapper)
             {
                 TotalScore = 1,
                 CurrentScore = 10
             };
-            testObj.DrawGame();
+            testObj.Draw();
 
             var otherConsoleWrapper = new FakeConsoleWrapper();
             var otherTestObj = new GameController(1, _fakeRandomGenerator, otherConsoleWrapper)

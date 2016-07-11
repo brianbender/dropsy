@@ -10,7 +10,7 @@ namespace Kata
             var game = new GameController(9, randomGenerator, new FileLoggingConsoleWrapper(), 500);
             while (!game.GameIsOver)
             {
-                game.DisplayBoard();
+                game.Draw();
 
                 if (game.CanAcceptInput)
                 {
@@ -18,7 +18,7 @@ namespace Kata
                     game.DoMove(input);
                 }
             }
-            game.DisplayBoard();
+            game.Draw();
         }
     }
 }
