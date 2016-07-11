@@ -85,7 +85,6 @@ namespace Kata
             } while (clearedCells.Count != 0);
         }
 
-
         private static int GetColumnIndex(string input)
         {
             return int.Parse(input) - 1;

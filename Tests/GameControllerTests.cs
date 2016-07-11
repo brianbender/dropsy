@@ -227,25 +227,7 @@ namespace Tests
    
 
 
-        [Test]
-        public void NewScoring()
-        {
-            Assert.Fail(@"
-Every time we cascade, increase the score factor by 2.5 power
 
-count of pops ^ 2.5 * 9
-
-(pops * 9) * (count of cascades ^ 2.5)
-
-pop 1
-cascades and pops 2
-
-9
-(2 * 9) * (2 ^ 2.5)
-(n * 9) * (3 ^ 2.5)
-
-Whole score of the move is the floor of the sum of those cascading numbers");
-        }
         [Test]
         public void Draw_DisplaysTheBoardAndTheScore()
         {

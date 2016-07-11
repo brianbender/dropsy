@@ -1,10 +1,13 @@
-﻿namespace Kata
+﻿using System;
+
+namespace Kata
 {
     public class Scoring
     {
         private readonly int _boardSize;
-        public int CurrentScore;
-        public int TotalScore;
+        public double CurrentScore;
+        public double TotalScore;
+        private int _cascadeCount = 0;
 
         public Scoring(int boardSize)
         {
@@ -15,8 +18,10 @@
 
         public void AddPoints(int countOfClearedCells)
         {
-            CurrentScore += countOfClearedCells * _boardSize;
-            TotalScore += countOfClearedCells * _boardSize;
+            _cascadeCount++;
+            var addedScore = Math.Floor(countOfClearedCells*_boardSize* Math.Pow(_cascadeCount, 2.5));
+            CurrentScore += addedScore;
+            TotalScore += addedScore;
         }
 
         public string GetScoreDisplay()
@@ -27,6 +32,7 @@
         public void Reset()
         {
             CurrentScore = 0;
+            _cascadeCount = 0;
         }
     }
 }

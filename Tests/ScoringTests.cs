@@ -31,7 +31,28 @@ namespace Tests
             _testObj.AddPoints(5);
 
             var output = _testObj.GetScoreDisplay();
-            Assert.That(output, Is.EqualTo("4590                       90"));
+            Assert.That(output, Is.EqualTo("4799                      299"));
+        }
+
+        [Test]
+        public void CascadingAddPointsDoesNewCalculation()
+        {
+            _testObj.AddPoints(1);
+            _testObj.AddPoints(2);
+            _testObj.AddPoints(3);
+            Assert.That(_testObj.TotalScore, Is.EqualTo(530));
+            Assert.That(_testObj.CurrentScore, Is.EqualTo(530));
+        }
+
+        [Test]
+        public void Reset_ResetsCascadeCounter()
+        {
+            _testObj.AddPoints(1);
+            _testObj.Reset();
+            _testObj.AddPoints(1);
+            Assert.That(_testObj.TotalScore, Is.EqualTo(18));
+            Assert.That(_testObj.CurrentScore, Is.EqualTo(9));
+
         }
 
         [Test]
@@ -53,5 +74,11 @@ namespace Tests
             Assert.That(testObj.CurrentScore, Is.EqualTo(expectedScore));
         }
 
+
+        [Test]
+        public void NextCard()
+        {
+            Assert.Fail("Every time you add a new block row, add 17000 points");
+        }
     }
 }
