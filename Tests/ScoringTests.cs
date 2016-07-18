@@ -30,7 +30,7 @@ namespace Tests
             _testObj.AddPoints(2);
             _testObj.AddPoints(3);
             Assert.That(_testObj.TotalScore, Is.EqualTo(530));
-            Assert.That(_testObj.CurrentScore, Is.EqualTo(530));
+            Assert.That(_testObj.CurrentScore, Is.EqualTo(420));
         }
 
         [Test]
@@ -50,24 +50,16 @@ namespace Tests
             _testObj.AddPoints(5);
 
             var output = _testObj.GetScoreDisplay();
-            Assert.That(output, Is.EqualTo("4799                      299"));
+            Assert.That(output, Is.EqualTo("4799                      254"));
         }
 
 
         [Test]
-        public void NextCard()
+        public void AddBlockRow_Adds17000Points()
         {
-            Assert.Fail("Every time you add a new block row, add 17000 points");
-        }
-
-        [Test]
-        public void Reset_ClearsCurrentScore()
-        {
-            _testObj.AddPoints(1);
-            Assert.That(_testObj.CurrentScore, Is.EqualTo(9));
-            _testObj.Reset();
-            Assert.That(_testObj.CurrentScore, Is.EqualTo(0));
-            Assert.That(_testObj.TotalScore, Is.EqualTo(9));
+            _testObj.AddBlockRow();
+            Assert.That(_testObj.CurrentScore, Is.EqualTo(17000));
+            Assert.That(_testObj.TotalScore, Is.EqualTo(17000));
         }
 
         [Test]

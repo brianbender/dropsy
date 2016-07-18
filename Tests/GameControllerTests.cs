@@ -32,6 +32,37 @@ namespace Tests
         }
 
         [Test]
+        public void AddBlockRowDoesNotDrawTwiceWhenAddingTheBlockRow()
+        {
+            _fakeRandomGenerator.NumberToReturn = 9;
+            var testObj = new GameController(5, _fakeRandomGenerator, _consoleWrapper);
+            testObj.DoMove("1");
+            testObj.DoMove("1");
+            testObj.DoMove("1");
+            testObj.DoMove("2");
+            testObj.DoMove("2");
+
+            var writes = _consoleWrapper.AllWrites.Count;
+            Assert.That(_consoleWrapper.AllWrites[writes - 1], Is.Not.EqualTo(_consoleWrapper.AllWrites[writes - 3]));
+            Assert.That(_consoleWrapper.AllWrites[writes - 2], Is.Not.EqualTo(_consoleWrapper.AllWrites[writes - 4]));
+        }
+
+        [Test]
+        public void AddingABlockRow_AdjustsScoring()
+        {
+            _fakeRandomGenerator.NumberToReturn = 9;
+
+            var testObj = new GameController(5, _fakeRandomGenerator, _consoleWrapper);
+            testObj.DoMove("1");
+            testObj.DoMove("1");
+            testObj.DoMove("1");
+            testObj.DoMove("2");
+            testObj.DoMove("2");
+
+            Assert.That(_consoleWrapper.LastWrite, Is.EqualTo("17000                   17000\r\n"));
+        }
+
+        [Test]
         public void AddingChipToOneByOneMeansGameOver()
         {
             _fakeRandomGenerator.NumberToReturn = 7;
@@ -48,6 +79,7 @@ namespace Tests
             testObj.DoMove("1");
             Assert.False(testObj.GameIsOver);
         }
+
 
         [Test]
         public void AfterPlacingFivePiecesMakeARowOfBlocks()
@@ -253,6 +285,24 @@ namespace Tests
         }
 
         [Test]
+        public void LosingByBlockRowCanNeverPop()
+        {
+            _fakeRandomGenerator.SetRandomNumbers(2, 4, 5, 7, 2);
+            var testObj = new BrokenEncapsulationGameController(4, _fakeRandomGenerator, _consoleWrapper);
+            testObj.DoMove("1");
+            testObj.DoMove("3");
+            testObj.DoMove("2");
+            testObj.GetBoard().AddBlockRow();
+            testObj.GetBoard().AddBlockRow();
+            testObj.DoMove("1");
+            testObj.DoMove("4");
+
+            Assert.That(testObj.GameIsOver, Is.True);
+            Assert.That(_consoleWrapper.LastWrite, Is.EqualTo("17000                17000\r\n"));
+            Assert.Fail("This test is wrong. we need to verify that if a block row comes in and a pop could have saved you, you are not saved.");
+        }
+
+        [Test]
         public void PopAndDropHappenInDiscreteSteps()
         {
             _fakeRandomGenerator.NumberToReturn = 9;
@@ -305,8 +355,6 @@ namespace Tests
             _fakeRandomGenerator.NumberToReturn = 1;
             var testObj = new GameController(1, _fakeRandomGenerator, _consoleWrapper);
             testObj.DoMove("1");
-
-            testObj.DisplayScore();
 
             Assert.That(_consoleWrapper.LastWrite, Is.EqualTo("1                           1\r\n"));
         }

@@ -10,7 +10,7 @@ namespace Kata
 
         public FileLoggingConsoleWrapper()
         {
-            _file = File.OpenWrite("last_game.txt");
+            _file = File.Open("last_game.txt", FileMode.Create);
         }
 
         public void Dispose()

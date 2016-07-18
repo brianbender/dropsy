@@ -51,38 +51,56 @@ namespace Kata
         {
             DisplayBoard();
             DisplayScore();
+            Thread.Sleep(_sleepTime);
         }
 
         private void UpdateGameState()
         {
             _movesTaken++;
+            _scoring.Reset();
 
             ProcessBoardChanges();
             if (_movesTaken%5 == 0)
             {
+                _scoring.Reset();
                 Board.AddBlockRow();
+                _scoring.AddBlockRow();
                 ProcessBoardChanges();
             }
             CanAcceptInput = true;
 
-            if (Board.TopRowIsFilled() || Board.ColumnOverFlowed())
+            if (Board.TopRowIsFilled() || ColumnOverflowed())
                 GameIsOver = true;
+        }
+
+        private bool ColumnOverflowed()
+        {
+            if (Board.ColumnOverFlowed())
+            {
+                GameIsOver = true;
+                Draw();
+                return true;
+            }
+            return false;
         }
 
         private void ProcessBoardChanges()
         {
-            _scoring.Reset();
             var clearedCells = new List<Tuple<int, int>>();
             do
             {
                 Draw();
-                Thread.Sleep(_sleepTime);
-                Board.ClearPoppedCells(clearedCells);
-                Draw();
-                Thread.Sleep(_sleepTime);
+                PopAndSleep(clearedCells);
                 clearedCells = Board.ClearNumbers();
                 _scoring.AddPoints(clearedCells.Count);
             } while (clearedCells.Count != 0);
+        }
+
+        private void PopAndSleep(List<Tuple<int, int>> clearedCells)
+        {
+            if (clearedCells.Count == 0) return;
+            Board.ClearPoppedCells(clearedCells);
+            Draw();
         }
 
         private static int GetColumnIndex(string input)

@@ -20,7 +20,7 @@ namespace Kata
         {
             _cascadeCount++;
             var addedScore = Math.Floor(countOfClearedCells*_boardSize*Math.Pow(_cascadeCount, 2.5));
-            CurrentScore += addedScore;
+            CurrentScore = addedScore;
             TotalScore += addedScore;
         }
 
@@ -31,8 +31,14 @@ namespace Kata
 
         public void Reset()
         {
-            CurrentScore = 0;
+            //CurrentScore = 0;
             _cascadeCount = 0;
+        }
+
+        public void AddBlockRow()
+        {
+            CurrentScore = 17000;
+            TotalScore += 17000;
         }
     }
 }
