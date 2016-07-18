@@ -15,6 +15,5 @@ namespace Kata
         {
             return _random.Next(1, maxValue + 1).ToString();
         }
-
     }
 }

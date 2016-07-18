@@ -179,7 +179,7 @@ namespace Kata
                 SetCellContent(tuple.Item1, tuple.Item2, Pop);
                 CrackAdjacentBlocks(tuple.Item1, tuple.Item2);
             }
-            return numbersToClear.OrderBy(c=>c.Item1).ThenBy(c=>c.Item2).ToList();
+            return numbersToClear.OrderBy(c => c.Item1).ThenBy(c => c.Item2).ToList();
         }
 
         private void CrackAdjacentBlocks(int row, int column)

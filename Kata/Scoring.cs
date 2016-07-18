@@ -5,9 +5,9 @@ namespace Kata
     public class Scoring
     {
         private readonly int _boardSize;
+        private int _cascadeCount;
         public double CurrentScore;
         public double TotalScore;
-        private int _cascadeCount = 0;
 
         public Scoring(int boardSize)
         {
@@ -19,7 +19,7 @@ namespace Kata
         public void AddPoints(int countOfClearedCells)
         {
             _cascadeCount++;
-            var addedScore = Math.Floor(countOfClearedCells*_boardSize* Math.Pow(_cascadeCount, 2.5));
+            var addedScore = Math.Floor(countOfClearedCells*_boardSize*Math.Pow(_cascadeCount, 2.5));
             CurrentScore += addedScore;
             TotalScore += addedScore;
         }

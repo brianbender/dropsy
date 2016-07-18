@@ -224,10 +224,6 @@ namespace Tests
             Assert.That(output, Is.EqualTo(expected));
         }
 
-   
-
-
-
         [Test]
         public void Draw_DisplaysTheBoardAndTheScore()
         {

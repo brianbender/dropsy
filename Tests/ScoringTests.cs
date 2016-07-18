@@ -6,12 +6,31 @@ namespace Tests
     [TestFixture]
     public class ScoringTests
     {
-        private Scoring _testObj;
-
         [SetUp]
         public void SetUp()
         {
             _testObj = new Scoring(9);
+        }
+
+        private Scoring _testObj;
+
+        [TestCase(9, 18)]
+        [TestCase(5, 10)]
+        public void ScoringIsBasedOnBoardSize(int boardSize, int expectedScore)
+        {
+            var testObj = new Scoring(boardSize);
+            testObj.AddPoints(2);
+            Assert.That(testObj.CurrentScore, Is.EqualTo(expectedScore));
+        }
+
+        [Test]
+        public void CascadingAddPointsDoesNewCalculation()
+        {
+            _testObj.AddPoints(1);
+            _testObj.AddPoints(2);
+            _testObj.AddPoints(3);
+            Assert.That(_testObj.TotalScore, Is.EqualTo(530));
+            Assert.That(_testObj.CurrentScore, Is.EqualTo(530));
         }
 
         [Test]
@@ -34,25 +53,11 @@ namespace Tests
             Assert.That(output, Is.EqualTo("4799                      299"));
         }
 
-        [Test]
-        public void CascadingAddPointsDoesNewCalculation()
-        {
-            _testObj.AddPoints(1);
-            _testObj.AddPoints(2);
-            _testObj.AddPoints(3);
-            Assert.That(_testObj.TotalScore, Is.EqualTo(530));
-            Assert.That(_testObj.CurrentScore, Is.EqualTo(530));
-        }
 
         [Test]
-        public void Reset_ResetsCascadeCounter()
+        public void NextCard()
         {
-            _testObj.AddPoints(1);
-            _testObj.Reset();
-            _testObj.AddPoints(1);
-            Assert.That(_testObj.TotalScore, Is.EqualTo(18));
-            Assert.That(_testObj.CurrentScore, Is.EqualTo(9));
-
+            Assert.Fail("Every time you add a new block row, add 17000 points");
         }
 
         [Test]
@@ -65,20 +70,14 @@ namespace Tests
             Assert.That(_testObj.TotalScore, Is.EqualTo(9));
         }
 
-        [TestCase(9, 18)]
-        [TestCase(5, 10)]
-        public void ScoringIsBasedOnBoardSize(int boardSize, int expectedScore)
-        {
-            var testObj = new Scoring(boardSize);
-            testObj.AddPoints(2);
-            Assert.That(testObj.CurrentScore, Is.EqualTo(expectedScore));
-        }
-
-
         [Test]
-        public void NextCard()
+        public void Reset_ResetsCascadeCounter()
         {
-            Assert.Fail("Every time you add a new block row, add 17000 points");
+            _testObj.AddPoints(1);
+            _testObj.Reset();
+            _testObj.AddPoints(1);
+            Assert.That(_testObj.TotalScore, Is.EqualTo(18));
+            Assert.That(_testObj.CurrentScore, Is.EqualTo(9));
         }
     }
 }

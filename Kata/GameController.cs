@@ -7,10 +7,10 @@ namespace Kata
     public class GameController
     {
         private readonly ConsoleWrapper _consoleWrapper;
+        private readonly Scoring _scoring;
         private readonly int _sleepTime;
         protected readonly Board Board;
         private int _movesTaken;
-        private readonly Scoring _scoring;
 
         private GameController(Board board, ConsoleWrapper consoleWrapper, int sleepTime = 0)
         {
