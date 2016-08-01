@@ -75,13 +75,10 @@ namespace Kata
 
         private bool ColumnOverflowed()
         {
-            if (Board.ColumnOverFlowed())
-            {
-                GameIsOver = true;
-                Draw();
-                return true;
-            }
-            return false;
+            if (!Board.ColumnOverFlowed()) return false;
+            GameIsOver = true;
+            Draw();
+            return true;
         }
 
         private void ProcessBoardChanges()
@@ -110,7 +107,9 @@ namespace Kata
 
         public void DisplayScore()
         {
-            _consoleWrapper.Write(_scoring.GetScoreDisplay() + Environment.NewLine);
+            var score = _scoring.GetScore();
+            var output = $"{score.Item1,-10}         {score.Item2,10}" + Environment.NewLine;
+            _consoleWrapper.Write(output);
         }
     }
 }

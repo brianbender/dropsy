@@ -6,39 +6,38 @@ namespace Kata
     {
         private readonly int _boardSize;
         private int _cascadeCount;
-        public double CurrentScore;
-        public double TotalScore;
+        private double _currentScore;
+        private double _totalScore;
 
         public Scoring(int boardSize)
         {
             _boardSize = boardSize;
-            CurrentScore = 0;
-            TotalScore = 0;
+            _currentScore = 0;
+            _totalScore = 0;
         }
 
         public void AddPoints(int countOfClearedCells)
         {
             _cascadeCount++;
             var addedScore = Math.Floor(countOfClearedCells*_boardSize*Math.Pow(_cascadeCount, 2.5));
-            CurrentScore = addedScore;
-            TotalScore += addedScore;
+            _currentScore = addedScore;
+            _totalScore += addedScore;
         }
 
-        public string GetScoreDisplay()
+        public Tuple<double, double> GetScore()
         {
-            return $"{TotalScore,-10}         {CurrentScore,10}";
+            return new Tuple<double, double>(_totalScore, _currentScore);
         }
 
         public void Reset()
         {
-            //CurrentScore = 0;
             _cascadeCount = 0;
         }
 
         public void AddBlockRow()
         {
-            CurrentScore = 17000;
-            TotalScore += 17000;
+            _currentScore = 17000;
+            _totalScore += 17000;
         }
     }
 }

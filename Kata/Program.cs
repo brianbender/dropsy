@@ -7,7 +7,10 @@ namespace Kata
         private static void Main()
         {
             IRandomGenerator randomGenerator = new RandomGenerator();
-            var game = new GameController(9, randomGenerator, new FileLoggingConsoleWrapper(), 500);
+            var consoleWrapper = new FileLoggingConsoleWrapper();
+            const int boardSize = 9;
+            const int sleepTime = 500;
+            var game = new GameController(boardSize, randomGenerator, consoleWrapper, sleepTime);
             while (!game.GameIsOver)
             {
                 game.Draw();
