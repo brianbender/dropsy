@@ -49,6 +49,7 @@
     <Compile Include="GameControllerTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ScoringTests.cs" />
+    <Compile Include="TestBoard.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

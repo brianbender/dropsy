@@ -12,20 +12,21 @@ namespace Kata
         protected readonly Board Board;
         private int _movesTaken;
 
-        private GameController(Board board, ConsoleWrapper consoleWrapper, int sleepTime = 0)
+        public GameController(Board board, ConsoleWrapper consoleWrapper, Scoring scoring, int sleepTime = 0)
         {
             Board = board;
             _consoleWrapper = consoleWrapper;
             _movesTaken = 0;
             CanAcceptInput = true;
             _sleepTime = sleepTime;
+            _scoring = scoring;
+
         }
 
         public GameController(int boardSize, IRandomGenerator randomGenerator, ConsoleWrapper consoleWrapper,
             int sleepTime = 0)
-            : this(new Board(boardSize, randomGenerator), consoleWrapper, sleepTime)
+            : this(new Board(boardSize, randomGenerator), consoleWrapper, new Scoring(boardSize), sleepTime)
         {
-            _scoring = new Scoring(boardSize);
         }
 
         public bool GameIsOver { get; set; }
@@ -68,8 +69,7 @@ namespace Kata
                 ProcessBoardChanges();
             }
             CanAcceptInput = true;
-
-            if (Board.TopRowIsFilled() || ColumnOverflowed())
+            if (Board.TopRowIsFilled())
                 GameIsOver = true;
         }
 
@@ -83,6 +83,11 @@ namespace Kata
 
         private void ProcessBoardChanges()
         {
+            if (ColumnOverflowed())
+            {
+                GameIsOver = true;
+                return;
+            }
             var clearedCells = new List<Tuple<int, int>>();
             do
             {

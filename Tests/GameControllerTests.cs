@@ -275,21 +275,20 @@ namespace Tests
         }
 
         [Test]
-        public void LosingByBlockRowCanNeverPop()
+        public void GameOverOccursIfBoardColumnOverflowedIsTrue()
         {
-            _fakeRandomGenerator.SetRandomNumbers(2, 4, 5, 7, 2);
-            var testObj = new BrokenEncapsulationGameController(4, _fakeRandomGenerator, _consoleWrapper);
-            testObj.DoMove("1");
-            testObj.DoMove("3");
+            var testBoard = new TestBoard(3, _fakeRandomGenerator);
+            var testObj = new GameController(testBoard, _consoleWrapper, new Scoring(3));
+            testBoard.OverrideCellContent(0, 0, "4");
+            testBoard.OverrideCellContent(1, 0, "3");
+            testBoard.OverrideCellContent(2, 0, "4");
+            testBoard.OverrideCellContent(2, 2, "4");
+            testBoard.OverrideCellContent(2, 1, "2");
+            testBoard.AddBlockRow();
+            Assert.That(testBoard.ColumnOverFlowed(), Is.True);
             testObj.DoMove("2");
-            testObj.GetBoard().AddBlockRow();
-            testObj.GetBoard().AddBlockRow();
-            testObj.DoMove("1");
-            testObj.DoMove("4");
-
             Assert.That(testObj.GameIsOver, Is.True);
-            Assert.That(_consoleWrapper.LastWrite, Is.EqualTo("17000                17000\r\n"));
-            //Assert.Fail("This test is wrong. we need to verify that if a block row comes in and a pop could have saved you, you are not saved.");
+            Assert.That(testBoard.GetCellContentForTest(0, 0), Is.EqualTo("3"));
         }
 
         [Test]

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Security.Cryptography.X509Certificates;
 using Kata;
 using NUnit.Framework;
 
@@ -16,23 +17,6 @@ namespace Tests
         }
 
         private FakeRandomGenerator _fakeRandomGenerator;
-
-        public class TestBoard : Board
-        {
-            public TestBoard(int size, IRandomGenerator randomGenerator) : base(size, randomGenerator)
-            {
-            }
-
-            public void OverrideCellContent(int row, int col, string content)
-            {
-                SetCellContent(row, col, content);
-            }
-
-            public string GetCellContentForTest(int row, int col)
-            {
-                return GetCellContent(row, col);
-            }
-        }
 
         [TestCase(1, 0)]
         [TestCase(0, 1)]
