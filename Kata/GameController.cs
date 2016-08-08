@@ -7,25 +7,23 @@ namespace Kata
     public class GameController
     {
         private readonly ConsoleWrapper _consoleWrapper;
-        private readonly Scoring _scoring;
         private readonly int _sleepTime;
         protected readonly Board Board;
         private int _movesTaken;
 
-        public GameController(Board board, ConsoleWrapper consoleWrapper, Scoring scoring, int sleepTime = 0)
+        public GameController(Board board, ConsoleWrapper consoleWrapper, int sleepTime = 0)
         {
             Board = board;
             _consoleWrapper = consoleWrapper;
             _movesTaken = 0;
             CanAcceptInput = true;
             _sleepTime = sleepTime;
-            _scoring = scoring;
 
         }
 
         public GameController(int boardSize, IRandomGenerator randomGenerator, ConsoleWrapper consoleWrapper,
             int sleepTime = 0)
-            : this(new Board(boardSize, randomGenerator), consoleWrapper, new Scoring(boardSize), sleepTime)
+            : this(new Board(boardSize, randomGenerator), consoleWrapper, sleepTime)
         {
         }
 
@@ -58,14 +56,12 @@ namespace Kata
         private void UpdateGameState()
         {
             _movesTaken++;
-            _scoring.Reset();
+            Board.ResetScore();
 
             ProcessBoardChanges();
-            if (_movesTaken%5 == 0)
+            if (_movesTaken % 5 == 0)
             {
-                _scoring.Reset();
                 Board.AddBlockRow();
-                _scoring.AddBlockRow();
                 ProcessBoardChanges();
             }
             CanAcceptInput = true;
@@ -94,7 +90,7 @@ namespace Kata
                 Draw();
                 PopAndSleep(clearedCells);
                 clearedCells = Board.ClearNumbers();
-                _scoring.AddPoints(clearedCells.Count);
+                Board.AddPoints(clearedCells.Count);
             } while (clearedCells.Count != 0);
         }
 
@@ -112,7 +108,7 @@ namespace Kata
 
         public void DisplayScore()
         {
-            var score = _scoring.GetScore();
+            var score = Board.GetScore();
             var output = $"{score.Item1,-10}         {score.Item2,10}" + Environment.NewLine;
             _consoleWrapper.Write(output);
         }

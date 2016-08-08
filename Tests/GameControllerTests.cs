@@ -278,7 +278,7 @@ namespace Tests
         public void GameOverOccursIfBoardColumnOverflowedIsTrue()
         {
             var testBoard = new TestBoard(3, _fakeRandomGenerator);
-            var testObj = new GameController(testBoard, _consoleWrapper, new Scoring(3));
+            var testObj = new GameController(testBoard, _consoleWrapper);
             testBoard.OverrideCellContent(0, 0, "4");
             testBoard.OverrideCellContent(1, 0, "3");
             testBoard.OverrideCellContent(2, 0, "4");

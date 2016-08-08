@@ -24,6 +24,7 @@ namespace Kata
         private bool _columnOverFlowed;
         private string _randomPiece;
         private string _topDisplay;
+        private Scoring _scoring;
 
         public Board(int size, IRandomGenerator randomGenerator)
         {
@@ -32,6 +33,7 @@ namespace Kata
             CreateCells();
             CreateTopAndBottom();
             _randomPiece = GetRandomChip();
+            _scoring = new Scoring(_size);
         }
 
         public string Display()
@@ -94,9 +96,9 @@ namespace Kata
 
         private string DisplayNextMove(int size)
         {
-            var chars = size*3 + 2;
+            var chars = size * 3 + 2;
             var top = Enumerable.Repeat(EmptySpace, chars).ToArray();
-            top[(chars - 1)/2] = _randomPiece;
+            top[(chars - 1) / 2] = _randomPiece;
             return string.Join("", top) + Environment.NewLine;
         }
 
@@ -137,6 +139,8 @@ namespace Kata
 
         public void AddBlockRow()
         {
+            _scoring.Reset();
+            _scoring.AddBlockRow();
             for (var col = 0; col < _size; ++col)
             {
                 if (!CellIsEmpty(0, col))
@@ -280,6 +284,21 @@ namespace Kata
                 SetCellContent(i, col, GetCellContent(i - 1, col));
             }
             SetCellContent(0, col, EmptySpace);
+        }
+
+        public void AddPoints(int count)
+        {
+            _scoring.AddPoints(count);
+        }
+
+        public Tuple<double, double> GetScore()
+        {
+            return _scoring.GetScore();
+        }
+
+        public void ResetScore()
+        {
+            _scoring.Reset();
         }
     }
 }
