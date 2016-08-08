@@ -1,0 +1,43 @@
+Dependencies:
+Program depends on View and GameController (also: IRandomGenerator)
+GameController depends on Board, which depends on Scoring (also: IRandomGenerator)
+View holds no dependencies
+
+Program
+	-void Main()
+
+GameController
+	-bool CanAcceptInput()
+	-bool GameIsOver()
+	-void DisplayBoard()
+	-void DisplayScore()
+	-void DoMove(string input)
+	-void Draw()
+
+Board
+	-void AddBlockRow()
+	-void AddPoints(int count)
+	-List<Tuple<int, int>> ClearNumbers()
+	-void ClearPoppedCells(List<Tuple<int, int>> clearedCells)
+	-bool ColumnOverFlowed()
+	-string Display()
+	-Tuple<double, double> GetScore()
+	-void PlaceChip(int column)
+	-void ResetScore()
+	-bool TopRowIsFilled()
+
+Scoring
+	-void AddBlockRow()
+	-void AddPoints(int countOfClearedCells)
+	-Tuple<double, double> GetScore()
+	-void Reset()
+
+IRandomGenerator
+	-string GetRandom(int maxValue)
+
+View
+	-void Clear()
+	-void Write(string output)
+
+
+
