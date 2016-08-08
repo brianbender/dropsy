@@ -16,7 +16,6 @@ GameController
 
 Board
 	-void AddBlockRow()
-	-void AddPoints(int count)
 	-List<Tuple<int, int>> ClearNumbers()
 	-void ClearPoppedCells(List<Tuple<int, int>> clearedCells)
 	-bool ColumnOverFlowed()

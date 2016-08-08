@@ -8,12 +8,14 @@ namespace Tests
     public class GameControllerTests
     {
         private FakeRandomGenerator _fakeRandomGenerator;
+        private string _newLine;
         private FakeView _view;
 
         [SetUp]
         public void SetUp()
         {
             _fakeRandomGenerator = new FakeRandomGenerator(1);
+            _newLine = Environment.NewLine;
             _view = new FakeView();
         }
 
@@ -68,10 +70,9 @@ namespace Tests
             testObj.DoMove("3");
             testObj.DisplayBoard();
             Assert.That(_view.LastWrite,
-                Is.EqualTo("     9     " + Environment.NewLine + "┌─────────┐" + Environment.NewLine + "│ 9  9    │" +
-                           Environment.NewLine + "│ 9  9  9 │" + Environment.NewLine + "│ █  █  █ │" +
-                           Environment.NewLine + "└─────────┘" + Environment.NewLine + "  1  2  3  " +
-                           Environment.NewLine));
+                Is.EqualTo("     9     " + _newLine + "┌─────────┐" + _newLine + "│ 9  9    │" + _newLine +
+                           "│ 9  9  9 │" + _newLine + "│ █  █  █ │" + _newLine + "└─────────┘" + _newLine +
+                           "  1  2  3  " + _newLine));
         }
 
         [Test]
@@ -86,10 +87,9 @@ namespace Tests
             testObj.DoMove("3");
             testObj.DisplayBoard();
             Assert.That(_view.LastWrite,
-                Is.EqualTo("     3     " + Environment.NewLine + "┌─────────┐" + Environment.NewLine + "│         │" +
-                           Environment.NewLine + "│ 3  3    │" + Environment.NewLine + "│ █  █  █ │" +
-                           Environment.NewLine + "└─────────┘" + Environment.NewLine + "  1  2  3  " +
-                           Environment.NewLine));
+                Is.EqualTo("     3     " + _newLine + "┌─────────┐" + _newLine + "│         │" + _newLine +
+                           "│ 3  3    │" + _newLine + "│ █  █  █ │" + _newLine + "└─────────┘" + _newLine +
+                           "  1  2  3  " + _newLine));
         }
 
         [Test]
@@ -156,10 +156,9 @@ namespace Tests
             testObj.DoMove("3");
             testObj.DisplayBoard();
             Assert.That(_view.LastWrite,
-                Is.EqualTo("     1     " + Environment.NewLine + "┌─────────┐" + Environment.NewLine + "│         │" +
-                           Environment.NewLine + "│         │" + Environment.NewLine + "│ 4  5  6 │" +
-                           Environment.NewLine + "└─────────┘" + Environment.NewLine + "  1  2  3  " +
-                           Environment.NewLine));
+                Is.EqualTo("     1     " + _newLine + "┌─────────┐" + _newLine + "│         │" + _newLine +
+                           "│         │" + _newLine + "│ 4  5  6 │" + _newLine + "└─────────┘" + _newLine +
+                           "  1  2  3  " + _newLine));
         }
 
         [Test]
@@ -168,8 +167,8 @@ namespace Tests
             var testObj = new GameController(1, _fakeRandomGenerator, _view);
             testObj.DisplayBoard();
             var output = _view.LastWrite;
-            var expected = "  1  " + Environment.NewLine + "┌───┐" + Environment.NewLine + "│   │" + Environment.NewLine +
-                           "└───┘" + Environment.NewLine + "  1  " + Environment.NewLine;
+            var expected = "  1  " + _newLine + "┌───┐" + _newLine + "│   │" + _newLine + "└───┘" + _newLine + "  1  " +
+                           _newLine;
 
             Assert.That(output, Is.EqualTo(expected));
         }
@@ -180,9 +179,8 @@ namespace Tests
             var testObj = new GameController(2, _fakeRandomGenerator, _view);
             testObj.DisplayBoard();
             var output = _view.LastWrite;
-            var expected = "   1    " + Environment.NewLine + "┌──────┐" + Environment.NewLine + "│      │" +
-                           Environment.NewLine + "│      │" + Environment.NewLine + "└──────┘" + Environment.NewLine +
-                           "  1  2  " + Environment.NewLine;
+            var expected = "   1    " + _newLine + "┌──────┐" + _newLine + "│      │" + _newLine + "│      │" + _newLine +
+                           "└──────┘" + _newLine + "  1  2  " + _newLine;
 
             Assert.That(output, Is.EqualTo(expected));
         }
@@ -195,15 +193,13 @@ namespace Tests
             testObj.DisplayBoard();
             var output = _view.LastWrite;
 
-            var expected = "              4              " + Environment.NewLine + "┌───────────────────────────┐" +
-                           Environment.NewLine + "│                           │" + Environment.NewLine +
-                           "│                           │" + Environment.NewLine + "│                           │" +
-                           Environment.NewLine + "│                           │" + Environment.NewLine +
-                           "│                           │" + Environment.NewLine + "│                           │" +
-                           Environment.NewLine + "│                           │" + Environment.NewLine +
-                           "│                           │" + Environment.NewLine + "│                           │" +
-                           Environment.NewLine + "└───────────────────────────┘" + Environment.NewLine +
-                           "  1  2  3  4  5  6  7  8  9  " + Environment.NewLine;
+            var expected = "              4              " + _newLine + "┌───────────────────────────┐" + _newLine +
+                           "│                           │" + _newLine + "│                           │" + _newLine +
+                           "│                           │" + _newLine + "│                           │" + _newLine +
+                           "│                           │" + _newLine + "│                           │" + _newLine +
+                           "│                           │" + _newLine + "│                           │" + _newLine +
+                           "│                           │" + _newLine + "└───────────────────────────┘" + _newLine +
+                           "  1  2  3  4  5  6  7  8  9  " + _newLine;
 
             Assert.That(output, Is.EqualTo(expected));
         }
@@ -263,10 +259,9 @@ namespace Tests
             testObj.DoMove("1");
             testObj.DoMove("1");
             testObj.DoMove("1");
-            var expected = "     4     " + Environment.NewLine + "┌─────────┐" + Environment.NewLine + "│         │" +
-                           Environment.NewLine + "│         │" + Environment.NewLine + "│ 3  █  █ │" +
-                           Environment.NewLine + "└─────────┘" + Environment.NewLine + "  1  2  3  " +
-                           Environment.NewLine;
+            var expected = "     4     " + _newLine + "┌─────────┐" + _newLine + "│         │" + _newLine +
+                           "│         │" + _newLine + "│ 3  █  █ │" + _newLine + "└─────────┘" + _newLine +
+                           "  1  2  3  " + _newLine;
 
             Assert.That(_view.AllWrites.Contains(expected), Is.True);
         }
@@ -286,10 +281,9 @@ namespace Tests
             testObj.DoMove("1");
             testObj.DisplayBoard();
             Assert.That(_view.LastWrite,
-                Is.EqualTo("     5     " + Environment.NewLine + "┌─────────┐" + Environment.NewLine + "│         │" +
-                           Environment.NewLine + "│    3    │" + Environment.NewLine + "│ 5  █  █ │" +
-                           Environment.NewLine + "└─────────┘" + Environment.NewLine + "  1  2  3  " +
-                           Environment.NewLine));
+                Is.EqualTo("     5     " + _newLine + "┌─────────┐" + _newLine + "│         │" + _newLine +
+                           "│    3    │" + _newLine + "│ 5  █  █ │" + _newLine + "└─────────┘" + _newLine +
+                           "  1  2  3  " + _newLine));
         }
 
         [Test]
@@ -330,18 +324,16 @@ namespace Tests
             testObj.DoMove("2");
             testObj.DisplayBoard();
             var output = _view.LastWrite;
-            var expected = "   5    " + Environment.NewLine + "┌──────┐" + Environment.NewLine + "│      │" +
-                           Environment.NewLine + "│    6 │" + Environment.NewLine + "└──────┘" + Environment.NewLine +
-                           "  1  2  " + Environment.NewLine;
+            var expected = "   5    " + _newLine + "┌──────┐" + _newLine + "│      │" + _newLine + "│    6 │" + _newLine +
+                           "└──────┘" + _newLine + "  1  2  " + _newLine;
 
             Assert.That(output, Is.EqualTo(expected));
             testObj.DoMove("2");
             testObj.DisplayBoard();
 
             output = _view.LastWrite;
-            expected = "   5    " + Environment.NewLine + "┌──────┐" + Environment.NewLine + "│    5 │" +
-                       Environment.NewLine + "│    6 │" + Environment.NewLine + "└──────┘" + Environment.NewLine +
-                       "  1  2  " + Environment.NewLine;
+            expected = "   5    " + _newLine + "┌──────┐" + _newLine + "│    5 │" + _newLine + "│    6 │" + _newLine +
+                       "└──────┘" + _newLine + "  1  2  " + _newLine;
 
             Assert.That(output, Is.EqualTo(expected));
         }

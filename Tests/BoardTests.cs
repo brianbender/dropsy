@@ -10,11 +10,13 @@ namespace Tests
     public class BoardTests
     {
         private FakeRandomGenerator _fakeRandomGenerator;
+        private string _newLine;
 
         [SetUp]
         public void SetUp()
         {
             _fakeRandomGenerator = new FakeRandomGenerator(1);
+            _newLine = Environment.NewLine;
         }
 
         [Test]
@@ -22,9 +24,8 @@ namespace Tests
         {
             var testObj = new Board(2, _fakeRandomGenerator);
             testObj.AddBlockRow();
-            var expected = "   1    " + Environment.NewLine + "┌──────┐" + Environment.NewLine + "│      │" +
-                           Environment.NewLine + "│ █  █ │" + Environment.NewLine + "└──────┘" + Environment.NewLine +
-                           "  1  2  " + Environment.NewLine;
+            var expected = "   1    " + _newLine + "┌──────┐" + _newLine + "│      │" + _newLine + "│ █  █ │" + _newLine +
+                           "└──────┘" + _newLine + "  1  2  " + _newLine;
 
             Assert.That(testObj.Display(), Is.EqualTo(expected));
         }
@@ -35,9 +36,8 @@ namespace Tests
             var testObj = new Board(2, _fakeRandomGenerator);
             testObj.AddBlockRow();
             testObj.AddBlockRow();
-            var expected = "   1    " + Environment.NewLine + "┌──────┐" + Environment.NewLine + "│ █  █ │" +
-                           Environment.NewLine + "│ █  █ │" + Environment.NewLine + "└──────┘" + Environment.NewLine +
-                           "  1  2  " + Environment.NewLine;
+            var expected = "   1    " + _newLine + "┌──────┐" + _newLine + "│ █  █ │" + _newLine + "│ █  █ │" + _newLine +
+                           "└──────┘" + _newLine + "  1  2  " + _newLine;
 
             Assert.That(testObj.Display(), Is.EqualTo(expected));
         }
@@ -67,10 +67,9 @@ namespace Tests
             var clears = testObj.ClearNumbers();
 
             testObj.ClearPoppedCells(clears);
-            var expected = "     3     " + Environment.NewLine + "┌─────────┐" + Environment.NewLine + "│         │" +
-                           Environment.NewLine + "│         │" + Environment.NewLine + "│         │" +
-                           Environment.NewLine + "└─────────┘" + Environment.NewLine + "  1  2  3  " +
-                           Environment.NewLine;
+            var expected = "     3     " + _newLine + "┌─────────┐" + _newLine + "│         │" + _newLine +
+                           "│         │" + _newLine + "│         │" + _newLine + "└─────────┘" + _newLine +
+                           "  1  2  3  " + _newLine;
 
             Assert.That(testObj.Display(), Is.EqualTo(expected));
         }
@@ -195,10 +194,9 @@ namespace Tests
             testObj.PlaceChip(0);
             var clears = testObj.ClearNumbers();
             testObj.ClearPoppedCells(clears);
-            var expected = "     1     " + Environment.NewLine + "┌─────────┐" + Environment.NewLine + "│         │" +
-                           Environment.NewLine + "│    3    │" + Environment.NewLine + "│ ▓  █  █ │" +
-                           Environment.NewLine + "└─────────┘" + Environment.NewLine + "  1  2  3  " +
-                           Environment.NewLine;
+            var expected = "     1     " + _newLine + "┌─────────┐" + _newLine + "│         │" + _newLine +
+                           "│    3    │" + _newLine + "│ ▓  █  █ │" + _newLine + "└─────────┘" + _newLine +
+                           "  1  2  3  " + _newLine;
 
             Assert.That(testObj.Display(), Is.EqualTo(expected));
         }
@@ -316,10 +314,9 @@ namespace Tests
             testObj.PlaceChip(0);
             var clears = testObj.ClearNumbers();
             testObj.ClearPoppedCells(clears);
-            var expected = "      1       " + Environment.NewLine + "┌────────────┐" + Environment.NewLine +
-                           "│            │" + Environment.NewLine + "│ 5          │" + Environment.NewLine +
-                           "│ ▓  █  █  █ │" + Environment.NewLine + "│ █  █  █  █ │" + Environment.NewLine +
-                           "└────────────┘" + Environment.NewLine + "  1  2  3  4  " + Environment.NewLine;
+            var expected = "      1       " + _newLine + "┌────────────┐" + _newLine + "│            │" + _newLine +
+                           "│ 5          │" + _newLine + "│ ▓  █  █  █ │" + _newLine + "│ █  █  █  █ │" + _newLine +
+                           "└────────────┘" + _newLine + "  1  2  3  4  " + _newLine;
 
             Assert.That(testObj.Display(), Is.EqualTo(expected));
         }
