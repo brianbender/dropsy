@@ -89,7 +89,6 @@ namespace Kata
                 Draw();
                 PopAndSleep(clearedCells);
                 clearedCells = Board.ClearNumbers();
-                Board.AddPoints(clearedCells.Count);
             } while (clearedCells.Count != 0);
         }
 

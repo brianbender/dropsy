@@ -56,11 +56,6 @@ namespace Kata
             }
         }
 
-        public void AddPoints(int count)
-        {
-            _scoring.AddPoints(count);
-        }
-
         public List<Tuple<int, int>> ClearNumbers()
         {
             var numbersToClear = new List<Tuple<int, int>>();
@@ -82,6 +77,7 @@ namespace Kata
                 SetCellContent(tuple.Item1, tuple.Item2, Pop);
                 CrackAdjacentBlocks(tuple.Item1, tuple.Item2);
             }
+            _scoring.AddPoints(numbersToClear.Count);
             return numbersToClear.OrderBy(c => c.Item1).ThenBy(c => c.Item2).ToList();
         }
 
