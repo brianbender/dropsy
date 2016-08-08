@@ -15,16 +15,16 @@ namespace Kata
         private const string LabelFiller = "  ";
         private const string EmptySpace = " ";
         private const string Pop = "*";
-        public static readonly string Block = "█";
-        public static readonly string CrackedBlock = "▓";
+        private const string Block = "█";
+        private const string CrackedBlock = "▓";
         private readonly IRandomGenerator _randomGenerator;
+        private readonly Scoring _scoring;
         private readonly int _size;
         private string _bottomDisplay;
         private string[,] _cellContents;
         private bool _columnOverFlowed;
         private string _randomPiece;
         private string _topDisplay;
-        private Scoring _scoring;
 
         public Board(int size, IRandomGenerator randomGenerator)
         {
@@ -34,107 +34,6 @@ namespace Kata
             CreateTopAndBottom();
             _randomPiece = GetRandomChip();
             _scoring = new Scoring(_size);
-        }
-
-        public string Display()
-        {
-            var middle = DrawInside();
-            return DisplayNextMove(_size) + _topDisplay + middle +
-                   _bottomDisplay;
-        }
-
-        public bool TopRowIsFilled()
-        {
-            for (var col = 0; col < _size; col++)
-            {
-                if (CellIsEmpty(0, col))
-                    return false;
-            }
-            return true;
-        }
-
-        public void PlaceChip(int column)
-        {
-            for (var row = _size - 1; row >= 0; row--)
-            {
-                if (!CellIsEmpty(row, column)) continue;
-                SetCellContent(row, column, _randomPiece);
-                _randomPiece = GetRandomChip();
-                return;
-            }
-        }
-
-        private void CreateCells()
-        {
-            _cellContents = new string[_size, _size];
-            for (var col = 0; col < _size; col++)
-            {
-                for (var row = 0; row < _size; row++)
-                {
-                    SetCellContent(row, col, " ");
-                }
-            }
-        }
-
-        private string MakeLabel()
-        {
-            var output = LabelFiller;
-            for (var i = 0; i < _size; i++)
-                output += i + 1 + LabelFiller;
-            return output + Environment.NewLine;
-        }
-
-        private void CreateTopAndBottom()
-        {
-            var output = "";
-            for (var i = 0; i < _size; i++)
-                output += HorizontalBorder;
-            var horizontalEdge = output;
-            _bottomDisplay = LowerLeft + horizontalEdge + LowerRight + Environment.NewLine + MakeLabel();
-            _topDisplay = UpperLeft + horizontalEdge + UpperRight + Environment.NewLine;
-        }
-
-        private string DisplayNextMove(int size)
-        {
-            var chars = size * 3 + 2;
-            var top = Enumerable.Repeat(EmptySpace, chars).ToArray();
-            top[(chars - 1) / 2] = _randomPiece;
-            return string.Join("", top) + Environment.NewLine;
-        }
-
-        private string DrawInside()
-        {
-            var middle = "";
-            for (var row = 0; row < _size; row++)
-            {
-                var rowText = "";
-                for (var column = 0; column < _size; column++)
-                {
-                    rowText += DrawCell(column, row);
-                }
-                middle += string.Format("{0}{1}{0}{2}", VerticalBorder, rowText, Environment.NewLine);
-            }
-            return middle;
-        }
-
-        protected void SetCellContent(int row, int col, string content)
-        {
-            _cellContents[row, col] = content;
-        }
-
-        protected string GetCellContent(int row, int column)
-        {
-            return _cellContents[row, column];
-        }
-
-        private string DrawCell(int column, int row)
-        {
-            return $" {GetCellContent(row, column)} ";
-        }
-
-        private bool CellIsEmpty(int row, int column)
-        {
-            return GetCellContent(row, column).Equals(" ");
         }
 
         public void AddBlockRow()
@@ -157,9 +56,9 @@ namespace Kata
             }
         }
 
-        public bool ColumnOverFlowed()
+        public void AddPoints(int count)
         {
-            return _columnOverFlowed;
+            _scoring.AddPoints(count);
         }
 
         public List<Tuple<int, int>> ClearNumbers()
@@ -186,6 +85,85 @@ namespace Kata
             return numbersToClear.OrderBy(c => c.Item1).ThenBy(c => c.Item2).ToList();
         }
 
+        public void ClearPoppedCells(List<Tuple<int, int>> clearedCells)
+        {
+            foreach (var tuple in clearedCells)
+            {
+                if (GetCellContent(tuple.Item1, tuple.Item2) != Block)
+                {
+                    PopAndDrop(tuple.Item1, tuple.Item2);
+                }
+            }
+        }
+
+        public bool ColumnOverFlowed()
+        {
+            return _columnOverFlowed;
+        }
+
+        public string Display()
+        {
+            var middle = DrawInside();
+            return DisplayNextMove(_size) + _topDisplay + middle + _bottomDisplay;
+        }
+
+        public Tuple<double, double> GetScore()
+        {
+            return _scoring.GetScore();
+        }
+
+        public void PlaceChip(int column)
+        {
+            for (var row = _size - 1; row >= 0; row--)
+            {
+                if (!CellIsEmpty(row, column))
+                    continue;
+                SetCellContent(row, column, _randomPiece);
+                _randomPiece = GetRandomChip();
+                return;
+            }
+        }
+
+        public void ResetScore()
+        {
+            _scoring.Reset();
+        }
+
+        public bool TopRowIsFilled()
+        {
+            for (var col = 0; col < _size; col++)
+            {
+                if (CellIsEmpty(0, col))
+                    return false;
+            }
+            return true;
+        }
+
+        protected string GetCellContent(int row, int column)
+        {
+            return _cellContents[row, column];
+        }
+
+        protected void SetCellContent(int row, int col, string content)
+        {
+            _cellContents[row, col] = content;
+        }
+
+        private bool CellContentIs(int row, int column, string contents)
+        {
+            return CellExists(row, column) && GetCellContent(row, column) == contents;
+        }
+
+        private bool CellExists(int row, int column)
+        {
+            return row < _size && column < _size && row >= 0 && column >= 0;
+        }
+
+        private bool CellIsEmpty(int row, int column)
+        {
+            return GetCellContent(row, column).Equals(" ");
+        }
+
         private void CrackAdjacentBlocks(int row, int column)
         {
             CrackBlock(row + 1, column);
@@ -202,43 +180,34 @@ namespace Kata
                 SetCellContent(row, column, GetRandomChip());
         }
 
-        private bool CellContentIs(int row, int column, string contents)
+        private void CreateCells()
         {
-            return CellExists(row, column) && GetCellContent(row, column) == contents;
-        }
-
-        private bool CellExists(int row, int column)
-        {
-            return row < _size && column < _size && row >= 0 && column >= 0;
-        }
-
-        private string GetRandomChip()
-        {
-            return _randomGenerator.GetRandom(_size);
-        }
-
-        private IEnumerable<Tuple<int, int>> DoRowWork(int row, int startingCol)
-        {
-            var numberInSeries = 0;
-            var columnsToClear = new List<Tuple<int, int>>();
-            for (var col = startingCol; col < _size; col++)
+            _cellContents = new string[_size, _size];
+            for (var col = 0; col < _size; col++)
             {
-                if (CellIsEmpty(row, col))
+                for (var row = 0; row < _size; row++)
                 {
-                    columnsToClear.AddRange(DoRowWork(row, col + 1));
-                    break;
+                    SetCellContent(row, col, " ");
                 }
-                numberInSeries++;
             }
+        }
 
-            //set of numbers to check is start to end
-            for (var col = startingCol; col < startingCol + numberInSeries; col++)
-            {
-                var cellContent = GetCellContent(row, col);
-                if (cellContent == numberInSeries.ToString())
-                    columnsToClear.Add(new Tuple<int, int>(row, col));
-            }
-            return columnsToClear;
+        private void CreateTopAndBottom()
+        {
+            var output = "";
+            for (var i = 0; i < _size; i++)
+                output += HorizontalBorder;
+            var horizontalEdge = output;
+            _bottomDisplay = LowerLeft + horizontalEdge + LowerRight + Environment.NewLine + MakeLabel();
+            _topDisplay = UpperLeft + horizontalEdge + UpperRight + Environment.NewLine;
+        }
+
+        private string DisplayNextMove(int size)
+        {
+            var chars = size*3 + 2;
+            var top = Enumerable.Repeat(EmptySpace, chars).ToArray();
+            top[(chars - 1)/2] = _randomPiece;
+            return string.Join("", top) + Environment.NewLine;
         }
 
         private IEnumerable<Tuple<int, int>> DoColumnWork(int col, int startingRow)
@@ -265,15 +234,61 @@ namespace Kata
             return cellsToClear;
         }
 
-        public void ClearPoppedCells(List<Tuple<int, int>> clearedCells)
+        private IEnumerable<Tuple<int, int>> DoRowWork(int row, int startingCol)
         {
-            foreach (var tuple in clearedCells)
+            var numberInSeries = 0;
+            var columnsToClear = new List<Tuple<int, int>>();
+            for (var col = startingCol; col < _size; col++)
             {
-                if (GetCellContent(tuple.Item1, tuple.Item2) != Block)
+                if (CellIsEmpty(row, col))
                 {
-                    PopAndDrop(tuple.Item1, tuple.Item2);
+                    columnsToClear.AddRange(DoRowWork(row, col + 1));
+                    break;
                 }
+                numberInSeries++;
             }
+
+            //set of numbers to check is start to end
+            for (var col = startingCol; col < startingCol + numberInSeries; col++)
+            {
+                var cellContent = GetCellContent(row, col);
+                if (cellContent == numberInSeries.ToString())
+                    columnsToClear.Add(new Tuple<int, int>(row, col));
+            }
+            return columnsToClear;
+        }
+
+        private string DrawCell(int column, int row)
+        {
+            return $" {GetCellContent(row, column)} ";
+        }
+
+        private string DrawInside()
+        {
+            var middle = "";
+            for (var row = 0; row < _size; row++)
+            {
+                var rowText = "";
+                for (var column = 0; column < _size; column++)
+                {
+                    rowText += DrawCell(column, row);
+                }
+                middle += string.Format("{0}{1}{0}{2}", VerticalBorder, rowText, Environment.NewLine);
+            }
+            return middle;
+        }
+
+        private string GetRandomChip()
+        {
+            return _randomGenerator.GetRandom(_size);
+        }
+
+        private string MakeLabel()
+        {
+            var output = LabelFiller;
+            for (var i = 0; i < _size; i++)
+                output += i + 1 + LabelFiller;
+            return output + Environment.NewLine;
         }
 
         private void PopAndDrop(int row, int col)
@@ -284,21 +299,6 @@ namespace Kata
                 SetCellContent(i, col, GetCellContent(i - 1, col));
             }
             SetCellContent(0, col, EmptySpace);
-        }
-
-        public void AddPoints(int count)
-        {
-            _scoring.AddPoints(count);
-        }
-
-        public Tuple<double, double> GetScore()
-        {
-            return _scoring.GetScore();
-        }
-
-        public void ResetScore()
-        {
-            _scoring.Reset();
         }
     }
 }

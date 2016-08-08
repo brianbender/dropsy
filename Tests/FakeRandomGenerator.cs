@@ -19,15 +19,15 @@ namespace Tests
             return (NumbersList.Any() ? NumbersList.Dequeue() : NumberToReturn).ToString();
         }
 
+        public string GetRandoms(int size)
+        {
+            return NumberToReturn.ToString();
+        }
+
         public void SetRandomNumbers(params int[] numbers)
         {
             foreach (var number in numbers)
                 NumbersList.Enqueue(number);
-        }
-
-        public string GetRandoms(int size)
-        {
-            return NumberToReturn.ToString();
         }
     }
 }

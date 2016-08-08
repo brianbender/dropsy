@@ -16,6 +16,12 @@ namespace Kata
             _totalScore = 0;
         }
 
+        public void AddBlockRow()
+        {
+            _currentScore = 17000;
+            _totalScore += 17000;
+        }
+
         public void AddPoints(int countOfClearedCells)
         {
             _cascadeCount++;
@@ -32,12 +38,6 @@ namespace Kata
         public void Reset()
         {
             _cascadeCount = 0;
-        }
-
-        public void AddBlockRow()
-        {
-            _currentScore = 17000;
-            _totalScore += 17000;
         }
     }
 }

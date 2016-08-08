@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Security.Cryptography.X509Certificates;
 using Kata;
 using NUnit.Framework;
 
@@ -10,25 +9,12 @@ namespace Tests
     [TestFixture]
     public class BoardTests
     {
+        private FakeRandomGenerator _fakeRandomGenerator;
+
         [SetUp]
         public void SetUp()
         {
             _fakeRandomGenerator = new FakeRandomGenerator(1);
-        }
-
-        private FakeRandomGenerator _fakeRandomGenerator;
-
-        [TestCase(1, 0)]
-        [TestCase(0, 1)]
-        [TestCase(-1, 0)]
-        [TestCase(0, -1)]
-        public void BlocksCrackInAllDirections(int rowOffset, int colOffset)
-        {
-            var testObj = new TestBoard(4, _fakeRandomGenerator);
-            testObj.OverrideCellContent(2, 2, Board.Block);
-            testObj.OverrideCellContent(2 + rowOffset, 2 + colOffset, "2");
-            testObj.ClearNumbers();
-            Assert.That(testObj.GetCellContentForTest(2, 2), Is.EqualTo(Board.CrackedBlock));
         }
 
         [Test]
@@ -36,11 +22,8 @@ namespace Tests
         {
             var testObj = new Board(2, _fakeRandomGenerator);
             testObj.AddBlockRow();
-            var expected = "   1    " + Environment.NewLine +
-                           "┌──────┐" + Environment.NewLine +
-                           "│      │" + Environment.NewLine +
-                           "│ █  █ │" + Environment.NewLine +
-                           "└──────┘" + Environment.NewLine +
+            var expected = "   1    " + Environment.NewLine + "┌──────┐" + Environment.NewLine + "│      │" +
+                           Environment.NewLine + "│ █  █ │" + Environment.NewLine + "└──────┘" + Environment.NewLine +
                            "  1  2  " + Environment.NewLine;
 
             Assert.That(testObj.Display(), Is.EqualTo(expected));
@@ -52,14 +35,24 @@ namespace Tests
             var testObj = new Board(2, _fakeRandomGenerator);
             testObj.AddBlockRow();
             testObj.AddBlockRow();
-            var expected = "   1    " + Environment.NewLine +
-                           "┌──────┐" + Environment.NewLine +
-                           "│ █  █ │" + Environment.NewLine +
-                           "│ █  █ │" + Environment.NewLine +
-                           "└──────┘" + Environment.NewLine +
+            var expected = "   1    " + Environment.NewLine + "┌──────┐" + Environment.NewLine + "│ █  █ │" +
+                           Environment.NewLine + "│ █  █ │" + Environment.NewLine + "└──────┘" + Environment.NewLine +
                            "  1  2  " + Environment.NewLine;
 
             Assert.That(testObj.Display(), Is.EqualTo(expected));
+        }
+
+        [TestCase(1, 0)]
+        [TestCase(0, 1)]
+        [TestCase(-1, 0)]
+        [TestCase(0, -1)]
+        public void BlocksCrackInAllDirections(int rowOffset, int colOffset)
+        {
+            var testObj = new TestBoard(4, _fakeRandomGenerator);
+            testObj.OverrideCellContent(2, 2, "█");
+            testObj.OverrideCellContent(2 + rowOffset, 2 + colOffset, "2");
+            testObj.ClearNumbers();
+            Assert.That(testObj.GetCellContentForTest(2, 2), Is.EqualTo("▓"));
         }
 
         [Test]
@@ -74,18 +67,13 @@ namespace Tests
             var clears = testObj.ClearNumbers();
 
             testObj.ClearPoppedCells(clears);
-            var expected =
-                "     3     " + Environment.NewLine +
-                "┌─────────┐" + Environment.NewLine +
-                "│         │" + Environment.NewLine +
-                "│         │" + Environment.NewLine +
-                "│         │" + Environment.NewLine +
-                "└─────────┘" + Environment.NewLine +
-                "  1  2  3  " + Environment.NewLine;
+            var expected = "     3     " + Environment.NewLine + "┌─────────┐" + Environment.NewLine + "│         │" +
+                           Environment.NewLine + "│         │" + Environment.NewLine + "│         │" +
+                           Environment.NewLine + "└─────────┘" + Environment.NewLine + "  1  2  3  " +
+                           Environment.NewLine;
 
             Assert.That(testObj.Display(), Is.EqualTo(expected));
         }
-
 
         [Test]
         public void ChipRemoval_DoesClearForColumnOfTwoNumbersWithTwos()
@@ -153,16 +141,9 @@ namespace Tests
             var cells = testObj.ClearNumbers();
             testObj.ClearPoppedCells(cells);
             testObj.ClearNumbers();
-            var expected =
-                "        2        \r\n" +
-                "┌───────────────┐\r\n" +
-                "│               │\r\n" +
-                "│               │\r\n" +
-                "│               │\r\n" +
-                "│               │\r\n" +
-                "│ *  *     *  * │\r\n" +
-                "└───────────────┘\r\n" +
-                "  1  2  3  4  5  \r\n";
+            var expected = "        2        \r\n" + "┌───────────────┐\r\n" + "│               │\r\n" +
+                           "│               │\r\n" + "│               │\r\n" + "│               │\r\n" +
+                           "│ *  *     *  * │\r\n" + "└───────────────┘\r\n" + "  1  2  3  4  5  \r\n";
             Assert.That(testObj.Display(), Is.EqualTo(expected));
         }
 
@@ -204,7 +185,6 @@ namespace Tests
             Assert.That(result, Is.EqualTo(expected));
         }
 
-
         [Test]
         public void ClearOnlyPopsBlockOnce_EvenIfRowAndColumnShouldCausePop()
         {
@@ -215,14 +195,10 @@ namespace Tests
             testObj.PlaceChip(0);
             var clears = testObj.ClearNumbers();
             testObj.ClearPoppedCells(clears);
-            var expected =
-                "     1     " + Environment.NewLine +
-                "┌─────────┐" + Environment.NewLine +
-                "│         │" + Environment.NewLine +
-                "│    3    │" + Environment.NewLine +
-                "│ ▓  █  █ │" + Environment.NewLine +
-                "└─────────┘" + Environment.NewLine +
-                "  1  2  3  " + Environment.NewLine;
+            var expected = "     1     " + Environment.NewLine + "┌─────────┐" + Environment.NewLine + "│         │" +
+                           Environment.NewLine + "│    3    │" + Environment.NewLine + "│ ▓  █  █ │" +
+                           Environment.NewLine + "└─────────┘" + Environment.NewLine + "  1  2  3  " +
+                           Environment.NewLine;
 
             Assert.That(testObj.Display(), Is.EqualTo(expected));
         }
@@ -237,13 +213,11 @@ namespace Tests
             testObj.PlaceChip(0);
             testObj.PlaceChip(0);
 
-
             testObj.ClearPoppedCells(new List<Tuple<int, int>> {new Tuple<int, int>(1, 0), new Tuple<int, int>(2, 0)});
             const string expected =
                 "     2     \r\n┌─────────┐\r\n│         │\r\n│         │\r\n│ 2       │\r\n└─────────┘\r\n  1  2  3  \r\n";
             Assert.That(testObj.Display(), Is.EqualTo(expected));
         }
-
 
         [Test]
         public void ClearPoppedCellsDoesNotClearBlocks()
@@ -323,17 +297,10 @@ namespace Tests
             testObj.PlaceChip(3);
 
             testObj.ClearNumbers();
-            var expected =
-                "         3          \r\n" +
-                "┌──────────────────┐\r\n" +
-                "│                  │\r\n" +
-                "│                  │\r\n" +
-                "│                  │\r\n" +
-                "│                  │\r\n" +
-                "│                  │\r\n" +
-                "│ *  5  7  3       │\r\n" +
-                "└──────────────────┘\r\n" +
-                "  1  2  3  4  5  6  \r\n";
+            var expected = "         3          \r\n" + "┌──────────────────┐\r\n" + "│                  │\r\n" +
+                           "│                  │\r\n" + "│                  │\r\n" + "│                  │\r\n" +
+                           "│                  │\r\n" + "│ *  5  7  3       │\r\n" + "└──────────────────┘\r\n" +
+                           "  1  2  3  4  5  6  \r\n";
             var display = testObj.Display();
             Assert.That(display, Is.EqualTo(expected));
         }
@@ -349,15 +316,10 @@ namespace Tests
             testObj.PlaceChip(0);
             var clears = testObj.ClearNumbers();
             testObj.ClearPoppedCells(clears);
-            var expected =
-                "      1       " + Environment.NewLine +
-                "┌────────────┐" + Environment.NewLine +
-                "│            │" + Environment.NewLine +
-                "│ 5          │" + Environment.NewLine +
-                "│ ▓  █  █  █ │" + Environment.NewLine +
-                "│ █  █  █  █ │" + Environment.NewLine +
-                "└────────────┘" + Environment.NewLine +
-                "  1  2  3  4  " + Environment.NewLine;
+            var expected = "      1       " + Environment.NewLine + "┌────────────┐" + Environment.NewLine +
+                           "│            │" + Environment.NewLine + "│ 5          │" + Environment.NewLine +
+                           "│ ▓  █  █  █ │" + Environment.NewLine + "│ █  █  █  █ │" + Environment.NewLine +
+                           "└────────────┘" + Environment.NewLine + "  1  2  3  4  " + Environment.NewLine;
 
             Assert.That(testObj.Display(), Is.EqualTo(expected));
         }

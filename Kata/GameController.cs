@@ -6,29 +6,41 @@ namespace Kata
 {
     public class GameController
     {
-        private readonly ConsoleWrapper _consoleWrapper;
-        private readonly int _sleepTime;
         protected readonly Board Board;
+        private readonly int _sleepTime;
+        private readonly View _view;
         private int _movesTaken;
 
-        public GameController(Board board, ConsoleWrapper consoleWrapper, int sleepTime = 0)
+        public GameController(Board board, View view, int sleepTime = 0)
         {
             Board = board;
-            _consoleWrapper = consoleWrapper;
+            _view = view;
             _movesTaken = 0;
             CanAcceptInput = true;
             _sleepTime = sleepTime;
-
         }
 
-        public GameController(int boardSize, IRandomGenerator randomGenerator, ConsoleWrapper consoleWrapper,
-            int sleepTime = 0)
-            : this(new Board(boardSize, randomGenerator), consoleWrapper, sleepTime)
+        public GameController(int boardSize, IRandomGenerator randomGenerator, View view, int sleepTime = 0)
+            : this(new Board(boardSize, randomGenerator), view, sleepTime)
         {
         }
 
-        public bool GameIsOver { get; set; }
         public bool CanAcceptInput { get; set; }
+
+        public bool GameIsOver { get; set; }
+
+        public void DisplayBoard()
+        {
+            _view.Clear();
+            _view.Write(Board.Display());
+        }
+
+        public void DisplayScore()
+        {
+            var score = Board.GetScore();
+            var output = $"{score.Item1,-10}         {score.Item2,10}" + Environment.NewLine;
+            _view.Write(output);
+        }
 
         public void DoMove(string input)
         {
@@ -40,12 +52,6 @@ namespace Kata
             UpdateGameState();
         }
 
-        public void DisplayBoard()
-        {
-            _consoleWrapper.Clear();
-            _consoleWrapper.Write(Board.Display());
-        }
-
         public void Draw()
         {
             DisplayBoard();
@@ -53,28 +59,21 @@ namespace Kata
             Thread.Sleep(_sleepTime);
         }
 
-        private void UpdateGameState()
-        {
-            _movesTaken++;
-            Board.ResetScore();
-
-            ProcessBoardChanges();
-            if (_movesTaken % 5 == 0)
-            {
-                Board.AddBlockRow();
-                ProcessBoardChanges();
-            }
-            CanAcceptInput = true;
-            if (Board.TopRowIsFilled())
-                GameIsOver = true;
-        }
-
         private bool ColumnOverflowed()
         {
-            if (!Board.ColumnOverFlowed()) return false;
+            if (!Board.ColumnOverFlowed())
+                return false;
             GameIsOver = true;
             Draw();
             return true;
+        }
+
+        private void PopAndSleep(List<Tuple<int, int>> clearedCells)
+        {
+            if (clearedCells.Count == 0)
+                return;
+            Board.ClearPoppedCells(clearedCells);
+            Draw();
         }
 
         private void ProcessBoardChanges()
@@ -94,23 +93,25 @@ namespace Kata
             } while (clearedCells.Count != 0);
         }
 
-        private void PopAndSleep(List<Tuple<int, int>> clearedCells)
+        private void UpdateGameState()
         {
-            if (clearedCells.Count == 0) return;
-            Board.ClearPoppedCells(clearedCells);
-            Draw();
+            _movesTaken++;
+            Board.ResetScore();
+
+            ProcessBoardChanges();
+            if (_movesTaken%5 == 0)
+            {
+                Board.AddBlockRow();
+                ProcessBoardChanges();
+            }
+            CanAcceptInput = true;
+            if (Board.TopRowIsFilled())
+                GameIsOver = true;
         }
 
         private static int GetColumnIndex(string input)
         {
             return int.Parse(input) - 1;
-        }
-
-        public void DisplayScore()
-        {
-            var score = Board.GetScore();
-            var output = $"{score.Item1,-10}         {score.Item2,10}" + Environment.NewLine;
-            _consoleWrapper.Write(output);
         }
     }
 }

@@ -6,32 +6,13 @@ namespace Tests
     [TestFixture]
     public class ScoringTests
     {
+        private Scoring _testObj;
+
         [SetUp]
         public void SetUp()
         {
             _testObj = new Scoring(9);
         }
-
-        private Scoring _testObj;
-
-        [TestCase(9, 18)]
-        [TestCase(5, 10)]
-        public void ScoringIsBasedOnBoardSize(int boardSize, int expectedScore)
-        {
-            var testObj = new Scoring(boardSize);
-            testObj.AddPoints(2);
-            var score = testObj.GetScore();
-            Assert.That(score.Item1, Is.EqualTo(expectedScore));
-            Assert.That(score.Item2, Is.EqualTo(expectedScore));
-        }
-
-        private void AssertScore(int expectedTotal, int expectedCurrent)
-        {
-            var score = _testObj.GetScore();
-            Assert.That(score.Item1, Is.EqualTo(expectedTotal));
-            Assert.That(score.Item2, Is.EqualTo(expectedCurrent));
-        }
-
 
         [Test]
         public void AddBlockRow_Adds17000Points()
@@ -74,6 +55,24 @@ namespace Tests
             _testObj.Reset();
             _testObj.AddPoints(1);
             AssertScore(18, 9);
+        }
+
+        [TestCase(9, 18)]
+        [TestCase(5, 10)]
+        public void ScoringIsBasedOnBoardSize(int boardSize, int expectedScore)
+        {
+            var testObj = new Scoring(boardSize);
+            testObj.AddPoints(2);
+            var score = testObj.GetScore();
+            Assert.That(score.Item1, Is.EqualTo(expectedScore));
+            Assert.That(score.Item2, Is.EqualTo(expectedScore));
+        }
+
+        private void AssertScore(int expectedTotal, int expectedCurrent)
+        {
+            var score = _testObj.GetScore();
+            Assert.That(score.Item1, Is.EqualTo(expectedTotal));
+            Assert.That(score.Item2, Is.EqualTo(expectedCurrent));
         }
     }
 }

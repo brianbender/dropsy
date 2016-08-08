@@ -4,11 +4,11 @@ using System.Text;
 
 namespace Kata
 {
-    public class FileLoggingConsoleWrapper : ConsoleWrapper, IDisposable
+    public class FileLoggingView : View, IDisposable
     {
         private readonly FileStream _file;
 
-        public FileLoggingConsoleWrapper()
+        public FileLoggingView()
         {
             _file = File.Open("last_game.txt", FileMode.Create);
         }
